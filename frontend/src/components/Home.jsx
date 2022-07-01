@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { searchPosts } from '../features/posts/postsSlice.js'
 import { useHistory, useLocation, NavLink } from 'react-router-dom'
 import Posts from './Posts.jsx'
 import Form from './Form.jsx'
@@ -11,11 +13,14 @@ import {
 	TextField,
 	Chip,
 	Autocomplete,
+	Button,
 } from '@mui/material'
 
 function Home() {
 	const [currentPostId, setCurrentPostId] = useState(null)
 	const [searchTags, setSearchTags] = useState([])
+	const [searchString, setSearchString] = useState('')
+	const dispatch = useDispatch()
 
 	return (
 		<Grid
@@ -29,29 +34,58 @@ function Home() {
 			</Grid>
 
 			<Grid item xs={12} sm={6} md={3}>
-				<AppBar
-					position='static'
-					color='inherit'
+				<Paper
+					elevation={6}
 					sx={{
-						borderRadius: 1,
 						mb: 2,
-						display: 'flex',
 						p: 2,
+						display: 'flex',
+						justifyContent: 'center',
 					}}
 				>
-					<TextField name='search' label='Search Posts' fullWidth />
-				</AppBar>
-
+					<Pagination
+						count={5}
+						page={1}
+						color='secondary'
+						renderItem={(item) => (
+							<PaginationItem
+								component={NavLink}
+								to='/auth'
+								{...item}
+							/>
+						)}
+					/>
+				</Paper>
 				<Paper
 					sx={{
 						display: 'flex',
+						flexDirection: 'column',
 						justifyContent: 'center',
-						p: 1,
+						p: 2,
 						mb: 2,
 					}}
 				>
+					<AppBar
+						position='static'
+						color='inherit'
+						sx={{
+							borderRadius: 1,
+							mb: 2,
+							boxShadow: 'none',
+						}}
+					>
+						<TextField
+							name='search'
+							label='Filter by post content'
+							fullWidth
+							value={searchString}
+							onChange={(e) => {
+								e.preventDefault()
+								setSearchString(e.target.value)
+							}}
+						/>
+					</AppBar>
 					<Autocomplete
-						fullWidth
 						multiple
 						id='tagsSearch'
 						options={[]}
@@ -77,33 +111,36 @@ function Home() {
 								<TextField
 									{...params}
 									variant='outlined'
-									label='Search Tags'
+									label='Filter by tags'
 									placeholder='e.g. Dogs'
 								/>
 							)
 						}}
 					/>
-				</Paper>
-
-				<Paper
-					elevation={6}
-					sx={{
-						mb: 2,
-						p: 2,
-					}}
-				>
-					<Pagination
-						count={5}
-						page={1}
-						color='secondary'
-						renderItem={(item) => (
-							<PaginationItem
-								component={NavLink}
-								to='/auth'
-								{...item}
-							/>
-						)}
-					/>
+					<Button
+						onClick={(e) => {
+							e.preventDefault()
+							!searchString.length && !searchTags.length
+								? console.log('nothing to see here folks')
+								: searchString.length && !searchTags.length
+								? dispatch(
+										searchPosts({
+											searchString,
+										})
+								  )
+								: dispatch(
+										searchPosts({
+											searchString,
+											searchTags,
+										})
+								  )
+						}}
+						sx={{
+							mt: 2,
+						}}
+					>
+						Search
+					</Button>
 				</Paper>
 				<Form
 					currentPostId={currentPostId}

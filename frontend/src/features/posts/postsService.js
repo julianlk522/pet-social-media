@@ -1,75 +1,99 @@
-import axios from "axios";
+import axios from 'axios'
 
 const url = 'http://localhost:5000/posts'
 
 const getPosts = async () => {
-    const response = await axios.get(url)
-    const postsData = response.data
-    return postsData
+	const response = await axios.get(url)
+	const postsData = response.data
+	return postsData
 }
 
 const createPost = async (newPost, token) => {
-    const config = {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    }
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	}
 
-    const response = await axios.post(url, newPost, config)
-    return response.data
+	const response = await axios.post(url, newPost, config)
+	return response.data
 }
 
 const updatePost = async (postId, updatedPost, token) => {
-    const config = {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    }
-    
-    try {
-        const response = await axios.patch(`${url}/${postId}`, updatedPost, config)
-        return response.data
-    } catch (error) {
-        return error.message
-    }
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	}
+
+	try {
+		const response = await axios.patch(
+			`${url}/${postId}`,
+			updatedPost,
+			config
+		)
+		return response.data
+	} catch (error) {
+		return error.message
+	}
 }
 
 const likePost = async (postId, userId, token) => {
-    const config = {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    }
-    
-    try {
-        const response = await axios.patch(`${url}/${postId}/${userId}/likePost`, [], config)
-        return response.data
-    } catch (error) {
-        return console.log(error)
-    }
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	}
+
+	try {
+		const response = await axios.patch(
+			`${url}/${postId}/${userId}/likePost`,
+			[],
+			config
+		)
+		return response.data
+	} catch (error) {
+		return console.log(error)
+	}
 }
 
 const deletePost = async (postId, token) => {
-    const config = {
-        headers: {
-            authorization: `Bearer ${token}`
-        }
-    }
-    
-    try {
-        const response = await axios.delete(`${url}/${postId}`, config)
-        return response.data
-    } catch (error) {
-        return console.log(error)
-    }
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	}
+
+	try {
+		const response = await axios.delete(`${url}/${postId}`, config)
+		return response.data
+	} catch (error) {
+		return error.message
+	}
+}
+
+const searchPosts = async (query, tags) => {
+	try {
+		const response =
+			query && tags
+				? await axios.get(`${url}/search?query=${query}&tags=${tags}`)
+				: !query && tags
+				? await axios.get(`${url}/search?tags=${tags}`)
+				: await axios.get(`${url}/search?query=${query}`)
+
+		return response.data
+	} catch (error) {
+		return error.message
+	}
 }
 
 const postsService = {
-    getPosts,
-    createPost,
-    updatePost,
-    deletePost,
-    likePost,
+	getPosts,
+	createPost,
+	updatePost,
+	deletePost,
+	likePost,
+	searchPosts,
 }
 
 export default postsService

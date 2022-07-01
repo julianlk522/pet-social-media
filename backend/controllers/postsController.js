@@ -1,14 +1,15 @@
 import mongoose from 'mongoose'
 import PostModel from '../models/postModel.js'
+import asyncHandler from 'express-async-handler'
 
-export const getPosts = async (req, res) => {
+export const getPosts = asyncHandler(async (req, res) => {
 	try {
 		const fetchedPosts = await PostModel.find()
 		res.status(200).json(fetchedPosts)
 	} catch (error) {
 		res.status(404).json({ message: error.message })
 	}
-}
+})
 
 export const createPost = async (req, res) => {
 	const post = req.body
@@ -26,8 +27,6 @@ export const createPost = async (req, res) => {
 
 export const updatePost = async (req, res) => {
 	try {
-		const post = await PostModel.findById(req.params.id)
-
 		const { title, message, creator, tags, imgBase64 } = req.body
 
 		const updatedPost = await PostModel.findByIdAndUpdate(
@@ -78,3 +77,24 @@ export const deletePost = async (req, res) => {
 
 	res.status(200).json(post._id)
 }
+
+export const searchPosts = asyncHandler(async (req, res) => {
+	const { query, tags } = req.query
+
+	if (!query && !tags) throw new Error('no query params provided')
+
+	const title = new RegExp(query, 'i')
+
+	const queriedPosts =
+		tags && query
+			? await PostModel.find({
+					$or: [{ title }, { tags: { $in: tags.split(',') } }],
+			  })
+			: !tags
+			? await PostModel.find({ title })
+			: await PostModel.find({
+					tags: { $in: tags.split(',') },
+			  })
+
+	res.status(200).json(queriedPosts)
+})
