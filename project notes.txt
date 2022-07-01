@@ -1,4 +1,0 @@
-MUI components to add:
-
-	-Chips for post tags
-	-Menu for profile actions dropdown
