@@ -1,0 +1,11 @@
+use material UI
+
+CRUD - 
+	sign-up, make posts
+
+	view posts, login
+
+	update posts, change user photo
+
+	remove posts
+
