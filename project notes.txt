@@ -1,11 +1,4 @@
-use material UI
+MUI components to add:
 
-CRUD - 
-	sign-up, make posts
-
-	view posts, login
-
-	update posts, change user photo
-
-	remove posts
-
+	-Chips for post tags
+	-Menu for profile actions dropdown
