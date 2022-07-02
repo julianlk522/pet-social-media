@@ -109,7 +109,7 @@ export const deletePost = createAsyncThunk(
 
 export const searchPosts = createAsyncThunk(
 	'posts/searchPosts',
-	async ({ searchString: query, searchTags: tags }, thunkAPI) => {
+	async ({ query, tags }, thunkAPI) => {
 		try {
 			tags && console.log(`query: ${query}, tags: ${tags.join(',')}`)
 			return await postsService.searchPosts(query, tags && tags.join(','))
@@ -158,7 +158,10 @@ const postsSlice = createSlice({
 			.addCase(searchPosts.fulfilled, (state, action) => {
 				state.isLoading = false
 				state.isSuccess = true
-				state.postsArray = action.payload
+				state.postsArray =
+					action.payload !== 'Request failed with status code 500'
+						? action.payload
+						: state.postsArray
 			})
 			.addCase(searchPosts.rejected, (state, action) => {
 				state.isLoading = false

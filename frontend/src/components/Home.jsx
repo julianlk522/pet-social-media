@@ -120,18 +120,21 @@ function Home() {
 					<Button
 						onClick={(e) => {
 							e.preventDefault()
-							!searchString.length && !searchTags.length
+							;(!searchString.trim().length &&
+								!searchTags.length) ||
+							!searchTags[0].trim()
 								? console.log('nothing to see here folks')
-								: searchString.length && !searchTags.length
+								: searchString.trim().length &&
+								  !searchTags.length
 								? dispatch(
 										searchPosts({
-											searchString,
+											query: searchString.trim(),
 										})
 								  )
 								: dispatch(
 										searchPosts({
-											searchString,
-											searchTags,
+											query: searchString.trim(),
+											tags: searchTags,
 										})
 								  )
 						}}
