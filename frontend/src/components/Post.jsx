@@ -74,7 +74,10 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					size='small'
 					onClick={() => setCurrentPostId(post._id)}
 					disabled={
-						featuresDisabled || loggedInUser?.name !== post.creator
+						loggedInUser?.admin
+							? false
+							: featuresDisabled ||
+							  loggedInUser?.name !== post.creator
 					}
 					sx={{
 						color: 'white',
@@ -143,7 +146,10 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 						setDeleteDialogOpen(true)
 					}}
 					disabled={
-						featuresDisabled || loggedInUser?.name !== post.creator
+						loggedInUser?.admin
+							? false
+							: featuresDisabled ||
+							  loggedInUser?.name !== post.creator
 					}
 				>
 					<DeleteIcon
