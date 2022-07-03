@@ -30,7 +30,7 @@ function Auth() {
 
 	const { name, email, password } = formData
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault()
 
 		if (isSignUp) {
@@ -40,17 +40,27 @@ function Auth() {
 				password,
 			}
 
-			dispatch(registerUser(signUpData))
+			const signupResponse = await dispatch(registerUser(signUpData))
+			if (signupResponse.type === 'users/registerUser/fulfilled') {
+				dispatch(resetUserState())
+				return navigate('/')
+			} else {
+				return console.log('bad login info provided!')
+			}
 		} else {
 			const loginData = {
 				email,
 				password,
 			}
 
-			dispatch(loginUser(loginData))
+			const loginResponse = await dispatch(loginUser(loginData))
+			if (loginResponse.type === 'users/loginUser/fulfilled') {
+				dispatch(resetUserState())
+				return navigate('/')
+			} else {
+				return console.log('bad login info provided!')
+			}
 		}
-		dispatch(resetUserState())
-		navigate('/')
 	}
 
 	const handleChange = (e) => {

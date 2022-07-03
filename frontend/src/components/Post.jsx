@@ -34,7 +34,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 
 	useEffect(() => {
 		const checkIfUserLiked = () => {
-			if (likes?.includes(loggedInUser._id)) {
+			if (likes?.includes(loggedInUser?._id)) {
 				setLiked(true)
 			}
 		}
@@ -141,6 +141,10 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 			>
 				<Button
 					size='small'
+					sx={{
+						display: 'flex',
+						alignItems: 'center',
+					}}
 					onClick={(e) => {
 						e.preventDefault()
 						if (!liked) {
