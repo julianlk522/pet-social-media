@@ -111,7 +111,9 @@ export const searchPosts = createAsyncThunk(
 	'posts/searchPosts',
 	async ({ query, tags }, thunkAPI) => {
 		try {
-			tags && console.log(`query: ${query}, tags: ${tags.join(',')}`)
+			tags
+				? console.log(`query: ${query}, tags: ${tags.join(',')}`)
+				: console.log(`query: ${query}`)
 			return await postsService.searchPosts(query, tags && tags.join(','))
 		} catch (error) {
 			const message =

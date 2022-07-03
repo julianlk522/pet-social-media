@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { searchPosts } from '../features/posts/postsSlice.js'
-import { useHistory, useLocation, NavLink } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import Posts from './Posts.jsx'
 import Form from './Form.jsx'
 import {
@@ -20,6 +20,7 @@ function Home() {
 	const [currentPostId, setCurrentPostId] = useState(null)
 	const [searchTags, setSearchTags] = useState([])
 	const [searchString, setSearchString] = useState('')
+	const [currentSearchTag, setCurrentSearchTag] = useState('')
 	const dispatch = useDispatch()
 
 	return (
@@ -89,12 +90,25 @@ function Home() {
 						multiple
 						id='tagsSearch'
 						options={[]}
-						defaultValue={[]}
+						value={searchTags}
+						inputValue={currentSearchTag}
+						onInputChange={(e) => {
+							setCurrentSearchTag(e.target.value)
+						}}
 						freeSolo
 						size='small'
 						onChange={(e, value) => {
 							e.preventDefault()
+							console.log(value)
+							if (
+								value.length &&
+								value.some((tag) => !tag.trim())
+							) {
+								console.log('found whitespace')
+								return
+							}
 							setSearchTags(value)
+							setCurrentSearchTag('')
 						}}
 						renderTags={(value, getTagProps) =>
 							value.map((option, idx) => (
@@ -122,7 +136,7 @@ function Home() {
 							e.preventDefault()
 							;(!searchString.trim().length &&
 								!searchTags.length) ||
-							!searchTags[0].trim()
+							searchString.match(/[^a-zA-Z\s']/)
 								? console.log('nothing to see here folks')
 								: searchString.trim().length &&
 								  !searchTags.length

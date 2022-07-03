@@ -11,6 +11,27 @@ export const getPosts = asyncHandler(async (req, res) => {
 	}
 })
 
+export const getPaginatedPosts = asyncHandler(async (req, res) => {
+	try {
+		let { page, limit } = req.query
+		if (!page) page = 1
+		if (!limit) limit = 3
+		const index = page * limit - 1
+		const totalDocs = await PostModel.countDocuments({})
+		const paginatedPosts = await PostModel.find()
+			.sort({ _id: -1 })
+			.limit(limit)
+			.skip(index)
+		res.status(200).json({
+			postData: paginatedPosts,
+			page,
+			totalPages: Math.ceil(totalDocs / limit),
+		})
+	} catch (error) {
+		res.status(404).json({ message: error.message })
+	}
+})
+
 export const createPost = async (req, res) => {
 	const post = req.body
 
