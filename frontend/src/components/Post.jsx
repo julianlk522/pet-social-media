@@ -1,6 +1,10 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { deletePost, likePost } from '../features/posts/postsSlice.js'
+import {
+	deletePost,
+	likePost,
+	unlikePost,
+} from '../features/posts/postsSlice.js'
 import {
 	Box,
 	Card,
@@ -22,8 +26,20 @@ import { formatDistanceToNow } from 'date-fns'
 
 function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 	const dispatch = useDispatch()
+	const likes = post.likes
 
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+	const [liked, setLiked] = useState(false)
+	const [likeCount, setLikeCount] = useState(likes?.length)
+
+	useEffect(() => {
+		const checkIfUserLiked = () => {
+			if (likes?.includes(loggedInUser._id)) {
+				setLiked(true)
+			}
+		}
+		checkIfUserLiked()
+	}, [loggedInUser, likes])
 
 	return (
 		<Card
@@ -125,19 +141,41 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 			>
 				<Button
 					size='small'
-					onClick={() => {
-						dispatch(likePost(post._id))
+					onClick={(e) => {
+						e.preventDefault()
+						if (!liked) {
+							dispatch(likePost(post._id))
+							setLikeCount((likeCount) => likeCount + 1)
+						} else {
+							dispatch(unlikePost(post._id))
+							setLikeCount((likeCount) => likeCount - 1)
+						}
+						setLiked(!liked)
 					}}
-					disabled={featuresDisabled}
+					disabled={
+						loggedInUser?.admin
+							? false
+							: featuresDisabled ||
+							  loggedInUser?.name !== post.creator
+					}
 				>
 					<ThumbUpAltIcon
 						fontSize='small'
+						color={liked ? 'primary' : 'action'}
 						sx={{
 							mr: 1,
+							transform: liked && 'scale(1.1)',
 						}}
 					/>
-					Likes
-					{` (${post.likes.length})`}
+					<span
+						id='likeDetails'
+						style={{
+							color: 'rgb(119, 119, 119)',
+						}}
+					>
+						Likes
+						{` (${likeCount})`}
+					</span>
 				</Button>
 
 				<Button

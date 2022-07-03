@@ -8,6 +8,22 @@ const getPosts = async () => {
 	return postsData
 }
 
+// const getPaginatedPosts = async () => {
+// 	let {page, limit} = req.query
+// 	if (!page) page = 1
+// 	if (!limit) limit = 3
+
+// 	try {
+// 		const index = page * limit - 1
+// 		const totalDocs = await Post
+// 		const response = await axios.get(url)
+// 		const postsData = response.data
+// 		return postsData
+// 	} catch (error) {
+
+// 	}
+// }
+
 const createPost = async (newPost, token) => {
 	const config = {
 		headers: {
@@ -57,6 +73,25 @@ const likePost = async (postId, userId, token) => {
 	}
 }
 
+const unlikePost = async (postId, userId, token) => {
+	const config = {
+		headers: {
+			authorization: `Bearer ${token}`,
+		},
+	}
+
+	try {
+		const response = await axios.patch(
+			`${url}/${postId}/${userId}/unlikePost`,
+			[],
+			config
+		)
+		return response.data
+	} catch (error) {
+		return console.log(error)
+	}
+}
+
 const deletePost = async (postId, token) => {
 	const config = {
 		headers: {
@@ -93,6 +128,7 @@ const postsService = {
 	updatePost,
 	deletePost,
 	likePost,
+	unlikePost,
 	searchPosts,
 }
 

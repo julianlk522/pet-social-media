@@ -19,7 +19,7 @@ function Posts({ setCurrentPostId }) {
 	}, [dispatch])
 
 	useEffect(() => {
-		if (loggedIn) setFeaturesDisabled(false)
+		if (!loggedIn) setFeaturesDisabled(true)
 	}, [loggedIn])
 
 	return isLoading ? (

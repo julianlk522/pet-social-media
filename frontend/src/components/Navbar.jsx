@@ -14,7 +14,6 @@ import {
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
-	Icon,
 } from '@mui/material'
 import dogLogo from '../assets/dogLogo.png'
 import { deepOrange } from '@mui/material/colors'
@@ -23,8 +22,7 @@ import BuildCircleIcon from '@mui/icons-material/BuildCircle'
 function Navbar() {
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
-	const { loggedIn, loggedInUser, checkingStatus, firstName, firstLetter } =
-		useAuthStatus()
+	const { loggedIn, loggedInUser, firstName, firstLetter } = useAuthStatus()
 
 	const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
 
