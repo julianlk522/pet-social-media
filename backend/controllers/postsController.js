@@ -3,18 +3,19 @@ import PostModel from '../models/postModel.js'
 import asyncHandler from 'express-async-handler'
 
 export const getPosts = asyncHandler(async (req, res) => {
-	try {
-		const fetchedPosts = await PostModel.find()
-		res.status(200).json(fetchedPosts)
-	} catch (error) {
-		res.status(404).json({ message: error.message })
-	}
+	const limit = 6
+	const totalDocs = await PostModel.countDocuments({})
+	const fetchedPosts = await PostModel.find().sort({ _id: -1 }).limit(limit)
+	res.status(200).json({
+		postData: fetchedPosts,
+		totalPages: Math.ceil(totalDocs / limit),
+	})
 })
 
 export const getPaginatedPosts = asyncHandler(async (req, res) => {
 	try {
-		let { page, limit, index } = req.query
-		if (!page || !limit || !index)
+		let { limit, index } = req.query
+		if (!limit || !index)
 			throw new Error('Not provided with a page, limit, and index')
 		const totalDocs = await PostModel.countDocuments({})
 		const paginatedPosts = await PostModel.find()
@@ -23,7 +24,6 @@ export const getPaginatedPosts = asyncHandler(async (req, res) => {
 			.skip(index)
 		res.status(200).json({
 			postData: paginatedPosts,
-			page,
 			totalPages: Math.ceil(totalDocs / limit),
 		})
 	} catch (error) {
@@ -69,7 +69,6 @@ export const likePost = asyncHandler(async (req, res) => {
 	console.log('old likes', post.likes)
 	console.log('userId', userId)
 	post.likes.push(userId)
-	console.log('new likes with pushed userId', post.likes)
 
 	await PostModel.findByIdAndUpdate(
 		postId,

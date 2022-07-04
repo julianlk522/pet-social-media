@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { searchPosts } from '../features/posts/postsSlice.js'
 import { useParams, useNavigate } from 'react-router-dom'
 import Posts from './Posts.jsx'
@@ -26,8 +26,9 @@ function Home() {
 
 	//	pagination state
 	const { page } = useParams()
-	const [currentPage, setCurrentPage] = useState(parseInt(page) || 1)
+	const [currentPage, setCurrentPage] = useState(parseInt(page) || null)
 
+	const totalPages = useSelector((state) => state.posts?.totalPages)
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
@@ -53,7 +54,7 @@ function Home() {
 					}}
 				>
 					<Pagination
-						count={5}
+						count={totalPages || 5}
 						page={currentPage || 1}
 						color='secondary'
 						renderItem={(item) => <PaginationItem {...item} />}

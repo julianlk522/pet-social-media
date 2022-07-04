@@ -3,6 +3,7 @@ import postsService from './postsService.js'
 
 const initialState = {
 	postsArray: [],
+	totalPages: null,
 	isError: false,
 	isSuccess: false,
 	isLoading: false,
@@ -175,6 +176,7 @@ const postsSlice = createSlice({
 			state.isSuccess = false
 			state.isLoading = false
 			state.message = ''
+			state.totalPages = null
 		},
 	},
 	extraReducers(builder) {
@@ -185,7 +187,12 @@ const postsSlice = createSlice({
 			.addCase(getPosts.fulfilled, (state, action) => {
 				state.isLoading = false
 				state.isSuccess = true
-				state.postsArray = action.payload
+				state.postsArray = action.payload.postData
+					? action.payload.postData
+					: state.postsArray
+				state.totalPages = action.payload.totalPages
+					? action.payload.totalPages
+					: state.totalPages
 			})
 			.addCase(getPosts.rejected, (state, action) => {
 				state.isLoading = false
@@ -201,6 +208,9 @@ const postsSlice = createSlice({
 				state.postsArray = action.payload.postData
 					? action.payload.postData
 					: state.postsArray
+				state.totalPages = action.payload.totalPages
+					? action.payload.totalPages
+					: state.totalPages
 			})
 			.addCase(getPaginatedPosts.rejected, (state, action) => {
 				state.isLoading = false

@@ -11,6 +11,8 @@ const getPosts = async () => {
 const getPaginatedPosts = async (page, limit) => {
 	if (!page) page = 1
 	if (!limit) limit = 4
+
+	//	starting index in posts db for desired posts e.g. number of skips
 	const index = (page - 1) * limit
 	const response = await axios.get(
 		`${url}/paginated?page=${page}&limit=${limit}&index=${index}`
