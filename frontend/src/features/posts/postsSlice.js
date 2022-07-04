@@ -27,6 +27,24 @@ export const getPosts = createAsyncThunk(
 	}
 )
 
+export const getPaginatedPosts = createAsyncThunk(
+	'posts/getPaginatedPosts',
+	async ({ page, limit }, thunkAPI) => {
+		try {
+			return await postsService.getPaginatedPosts(page, limit)
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.resonse.data.message) ||
+				error.message ||
+				error.toString()
+
+			return thunkAPI.rejectWithValue(message)
+		}
+	}
+)
+
 export const createPost = createAsyncThunk(
 	'posts/createPost',
 	async (newPost, thunkAPI) => {
@@ -170,6 +188,21 @@ const postsSlice = createSlice({
 				state.postsArray = action.payload
 			})
 			.addCase(getPosts.rejected, (state, action) => {
+				state.isLoading = false
+				state.isError = true
+				state.message = action.payload
+			})
+			.addCase(getPaginatedPosts.pending, (state) => {
+				state.isLoading = true
+			})
+			.addCase(getPaginatedPosts.fulfilled, (state, action) => {
+				state.isLoading = false
+				state.isSuccess = true
+				state.postsArray = action.payload.postData
+					? action.payload.postData
+					: state.postsArray
+			})
+			.addCase(getPaginatedPosts.rejected, (state, action) => {
 				state.isLoading = false
 				state.isError = true
 				state.message = action.payload

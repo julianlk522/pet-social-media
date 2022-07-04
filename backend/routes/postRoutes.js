@@ -8,10 +8,13 @@ import {
 	likePost,
 	unlikePost,
 	searchPosts,
+	getPaginatedPosts,
 } from '../controllers/postsController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
 router.route('/').get(getPosts).post(authMiddleware, createPost)
+
+router.route('/paginated').get(getPaginatedPosts)
 
 router
 	.route('/:id')

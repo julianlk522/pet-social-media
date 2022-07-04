@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { searchPosts } from '../features/posts/postsSlice.js'
-import { NavLink } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import Posts from './Posts.jsx'
 import Form from './Form.jsx'
 import {
@@ -18,10 +18,18 @@ import {
 
 function Home() {
 	const [currentPostId, setCurrentPostId] = useState(null)
+
+	//	post search state
 	const [searchTags, setSearchTags] = useState([])
 	const [searchString, setSearchString] = useState('')
 	const [currentSearchTag, setCurrentSearchTag] = useState('')
+
+	//	pagination state
+	const { page } = useParams()
+	const [currentPage, setCurrentPage] = useState(parseInt(page) || 1)
+
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 
 	return (
 		<Grid
@@ -31,7 +39,7 @@ function Home() {
 			spacing={3}
 		>
 			<Grid item xs={12} sm={6} md={9}>
-				<Posts setCurrentPostId={setCurrentPostId} />
+				<Posts setCurrentPostId={setCurrentPostId} page={currentPage} />
 			</Grid>
 
 			<Grid item xs={12} sm={6} md={3}>
@@ -46,15 +54,13 @@ function Home() {
 				>
 					<Pagination
 						count={5}
-						page={1}
+						page={currentPage || 1}
 						color='secondary'
-						renderItem={(item) => (
-							<PaginationItem
-								component={NavLink}
-								to='/auth'
-								{...item}
-							/>
-						)}
+						renderItem={(item) => <PaginationItem {...item} />}
+						onChange={(e) => {
+							setCurrentPage(parseInt(e.target.innerText))
+							navigate(`/posts/page${e.target.innerText}`)
+						}}
 					/>
 				</Paper>
 				<Paper

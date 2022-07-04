@@ -37,6 +37,7 @@ function App() {
 						element={<Navigate to='/posts' replace={true} />}
 					/>
 					<Route exact path='/posts' element={<Home />} />
+					<Route exact path='/posts/page:page' element={<Home />} />
 					<Route exact path='/posts/:id' element={<PostDetails />} />
 					<Route exact path='/auth' element={<Auth />} />
 				</Routes>

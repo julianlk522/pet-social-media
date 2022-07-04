@@ -65,16 +65,12 @@ const userSlice = createSlice({
 	},
 	extraReducers(builder) {
 		builder
-			.addCase(registerUser.pending, (state) => {
-				state.isLoading = true
-			})
 			.addCase(registerUser.fulfilled, (state, action) => {
-				state.isLoading = false
+				state.isLoading = true
 				state.isSuccess = true
 				state.currentUser = action.payload
 			})
 			.addCase(registerUser.rejected, (state, action) => {
-				state.isLoading = false
 				state.isError = true
 				state.message = action.payload
 			})

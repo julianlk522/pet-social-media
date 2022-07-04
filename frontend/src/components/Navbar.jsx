@@ -16,7 +16,17 @@ import {
 	DialogTitle,
 } from '@mui/material'
 import dogLogo from '../assets/dogLogo.png'
-import { deepOrange } from '@mui/material/colors'
+import {
+	deepOrange,
+	amber,
+	cyan,
+	indigo,
+	lime,
+	pink,
+	teal,
+	blue,
+	green,
+} from '@mui/material/colors'
 import BuildCircleIcon from '@mui/icons-material/BuildCircle'
 
 function Navbar() {
@@ -25,6 +35,19 @@ function Navbar() {
 	const { loggedIn, loggedInUser, firstName, firstLetter } = useAuthStatus()
 
 	const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
+	const possibleAvatarColors = [
+		deepOrange[500],
+		amber[500],
+		cyan[500],
+		indigo[500],
+		lime[500],
+		pink[500],
+		teal[500],
+		blue[500],
+		green[500],
+	]
+	const avatarColorsIndex =
+		firstLetter?.charCodeAt(0) % possibleAvatarColors.length
 
 	return (
 		<AppBar
@@ -86,7 +109,9 @@ function Navbar() {
 				>
 					<Avatar
 						sx={{
-							bgcolor: deepOrange[500],
+							bgcolor: avatarColorsIndex
+								? possibleAvatarColors[avatarColorsIndex]
+								: deepOrange[500],
 						}}
 					>
 						{firstLetter && firstLetter}

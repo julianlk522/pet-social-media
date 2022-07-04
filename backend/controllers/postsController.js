@@ -13,10 +13,9 @@ export const getPosts = asyncHandler(async (req, res) => {
 
 export const getPaginatedPosts = asyncHandler(async (req, res) => {
 	try {
-		let { page, limit } = req.query
-		if (!page) page = 1
-		if (!limit) limit = 3
-		const index = page * limit - 1
+		let { page, limit, index } = req.query
+		if (!page || !limit || !index)
+			throw new Error('Not provided with a page, limit, and index')
 		const totalDocs = await PostModel.countDocuments({})
 		const paginatedPosts = await PostModel.find()
 			.sort({ _id: -1 })

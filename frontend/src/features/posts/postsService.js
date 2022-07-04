@@ -8,21 +8,16 @@ const getPosts = async () => {
 	return postsData
 }
 
-// const getPaginatedPosts = async () => {
-// 	let {page, limit} = req.query
-// 	if (!page) page = 1
-// 	if (!limit) limit = 3
-
-// 	try {
-// 		const index = page * limit - 1
-// 		const totalDocs = await Post
-// 		const response = await axios.get(url)
-// 		const postsData = response.data
-// 		return postsData
-// 	} catch (error) {
-
-// 	}
-// }
+const getPaginatedPosts = async (page, limit) => {
+	if (!page) page = 1
+	if (!limit) limit = 4
+	const index = (page - 1) * limit
+	const response = await axios.get(
+		`${url}/paginated?page=${page}&limit=${limit}&index=${index}`
+	)
+	const postsData = response.data
+	return postsData
+}
 
 const createPost = async (newPost, token) => {
 	const config = {
@@ -124,6 +119,7 @@ const searchPosts = async (query, tags) => {
 
 const postsService = {
 	getPosts,
+	getPaginatedPosts,
 	createPost,
 	updatePost,
 	deletePost,

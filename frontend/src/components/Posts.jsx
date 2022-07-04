@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getPosts } from '../features/posts/postsSlice.js'
+import { getPaginatedPosts, getPosts } from '../features/posts/postsSlice.js'
 import { useAuthStatus } from '../hooks/useAuthStatus'
 import Post from './Post.jsx'
 import { CircularProgress, Grid, Box } from '@mui/material'
 
-function Posts({ setCurrentPostId }) {
+function Posts({ setCurrentPostId, page }) {
 	const dispatch = useDispatch()
 	const isLoading = useSelector((state) => state.posts.isLoading)
 	const posts = useSelector((state) => state.posts.postsArray)
@@ -15,8 +15,8 @@ function Posts({ setCurrentPostId }) {
 	const [featuresDisabled, setFeaturesDisabled] = useState(true)
 
 	useEffect(() => {
-		dispatch(getPosts())
-	}, [dispatch])
+		page ? dispatch(getPaginatedPosts({ page })) : dispatch(getPosts())
+	}, [dispatch, page])
 
 	useEffect(() => {
 		if (!loggedIn) setFeaturesDisabled(true)
@@ -47,7 +47,17 @@ function Posts({ setCurrentPostId }) {
 			))}
 		</Grid>
 	) : (
-		<h3>Seems there are no posts that match your search! Sorry...</h3>
+		<Box
+			sx={{
+				display: 'flex',
+				height: '50%',
+				justifyContent: 'center',
+				alignItems: 'center',
+				color: 'white',
+			}}
+		>
+			<h3>Seems there are no posts that match your search! Sorry...</h3>
+		</Box>
 	)
 }
 
