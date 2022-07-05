@@ -31,6 +31,8 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 	const likes = post.likes
 
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+
+	// liked/likeCount state
 	const [liked, setLiked] = useState(false)
 	const [likeCount, setLikeCount] = useState(likes?.length)
 
@@ -42,10 +44,6 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 		}
 		checkIfUserLiked()
 	}, [loggedInUser, likes])
-
-	const openPost = () => {
-		navigate(`/posts/${post._id}`, { state: { post } })
-	}
 
 	return (
 		<Card
@@ -61,7 +59,17 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 			}}
 		>
 			<CardMedia
-				onClick={openPost}
+				onClick={() =>
+					navigate(`/posts/${post._id}`, {
+						state: {
+							post: post,
+							liked: liked,
+							likeCount: likeCount,
+							featuresDisabled: featuresDisabled,
+							loggedInUser: loggedInUser,
+						},
+					})
+				}
 				image={post.imgBase64}
 				title={post.title}
 				sx={{
@@ -111,7 +119,17 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 				</Button>
 			</Box>
 			<CardContent
-				onClick={openPost}
+				onClick={() =>
+					navigate(`/posts/${post._id}`, {
+						state: {
+							post: post,
+							liked: liked,
+							likeCount: likeCount,
+							featuresDisabled: featuresDisabled,
+							loggedInUser: loggedInUser,
+						},
+					})
+				}
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
@@ -159,6 +177,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					justifyContent: 'space-evenly',
 				}}
 			>
+				{/* likes */}
 				<Button
 					size='small'
 					sx={{
@@ -202,6 +221,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					</span>
 				</Button>
 
+				{/* delete button */}
 				<Button
 					size='small'
 					onClick={() => {
@@ -227,14 +247,14 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					open={deleteDialogOpen}
 					onClose={() => setDeleteDialogOpen(false)}
 					aria-labelledby='delete-button-dialog-box'
-					aria-describedby='prompts the user with a confirmation dialog for deleting a post'
+					aria-describedby='delete-dialog-prompt'
 				>
-					<DialogTitle>
+					<DialogTitle id='delete-button-dialog-box'>
 						{'Are you sure you want to delete this post?'}
 					</DialogTitle>
 
 					<DialogContent>
-						<DialogContentText>
+						<DialogContentText id='delete-dialog-prompt'>
 							Once the post is deleted it will be removed from
 							PetSocial forever!
 						</DialogContentText>

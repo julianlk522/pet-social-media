@@ -3,6 +3,7 @@ import postsService from './postsService.js'
 
 const initialState = {
 	postsArray: [],
+	selectedPost: null,
 	totalPages: null,
 	isError: false,
 	isSuccess: false,

@@ -19,9 +19,9 @@ function Posts({ setCurrentPostId, page }) {
 		page ? dispatch(getPaginatedPosts({ page })) : dispatch(getPosts())
 	}, [dispatch, page])
 
-	//	revoke editing privileges when not signed in
+	//	check if signed in, if so grant editing privileges
 	useEffect(() => {
-		if (!loggedIn) setFeaturesDisabled(true)
+		if (loggedIn) setFeaturesDisabled(false)
 	}, [loggedIn])
 
 	return isLoading ? (
