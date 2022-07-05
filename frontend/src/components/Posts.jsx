@@ -14,10 +14,12 @@ function Posts({ setCurrentPostId, page }) {
 
 	const [featuresDisabled, setFeaturesDisabled] = useState(true)
 
+	//	fetch post data on load
 	useEffect(() => {
 		page ? dispatch(getPaginatedPosts({ page })) : dispatch(getPosts())
 	}, [dispatch, page])
 
+	//	revoke editing privileges when not signed in
 	useEffect(() => {
 		if (!loggedIn) setFeaturesDisabled(true)
 	}, [loggedIn])
@@ -36,7 +38,7 @@ function Posts({ setCurrentPostId, page }) {
 	) : posts.length ? (
 		<Grid container alignItems='stretch' spacing={3}>
 			{posts.map((post) => (
-				<Grid item key={post._id} xs={12} sm={12} md={6} lg={4}>
+				<Grid item key={post._id} xs={12} md={6}>
 					<Post
 						post={post}
 						setCurrentPostId={setCurrentPostId}

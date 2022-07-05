@@ -3,7 +3,7 @@ import PostModel from '../models/postModel.js'
 import asyncHandler from 'express-async-handler'
 
 export const getPosts = asyncHandler(async (req, res) => {
-	const limit = 6
+	const limit = 4
 	const totalDocs = await PostModel.countDocuments({})
 	const fetchedPosts = await PostModel.find().sort({ _id: -1 }).limit(limit)
 	res.status(200).json({

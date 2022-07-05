@@ -39,11 +39,12 @@ function Home() {
 			alignItems='stretch'
 			spacing={3}
 		>
-			<Grid item xs={12} sm={6} md={9}>
+			<Grid item xs={12} lg={9}>
 				<Posts setCurrentPostId={setCurrentPostId} page={currentPage} />
 			</Grid>
 
-			<Grid item xs={12} sm={6} md={3}>
+			<Grid item xs={12} lg={3}>
+				{/* pagination */}
 				<Paper
 					elevation={6}
 					sx={{
@@ -64,6 +65,8 @@ function Home() {
 						}}
 					/>
 				</Paper>
+
+				{/* search area */}
 				<Paper
 					sx={{
 						display: 'flex',

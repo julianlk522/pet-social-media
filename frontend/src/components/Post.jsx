@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 import {
 	deletePost,
 	likePost,
@@ -26,6 +27,7 @@ import { formatDistanceToNow } from 'date-fns'
 
 function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 	const dispatch = useDispatch()
+	const navigate = useNavigate()
 	const likes = post.likes
 
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
@@ -41,6 +43,10 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 		checkIfUserLiked()
 	}, [loggedInUser, likes])
 
+	const openPost = () => {
+		navigate(`/posts/${post._id}`, { state: { post } })
+	}
+
 	return (
 		<Card
 			raised
@@ -55,15 +61,17 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 			}}
 		>
 			<CardMedia
+				onClick={openPost}
 				image={post.imgBase64}
 				title={post.title}
 				sx={{
 					pt: '50%',
 					bgcolor: 'rgba(0, 0, 0, 0.5)',
 					backgroundBlendMode: 'darken',
+					cursor: 'pointer',
 				}}
 			/>
-
+			{/* post creator and post age */}
 			<Box
 				sx={{
 					position: 'absolute',
@@ -77,7 +85,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					{formatDistanceToNow(new Date(post.createdAt))}
 				</Typography>
 			</Box>
-
+			{/* edit button */}
 			<Box
 				sx={{
 					position: 'absolute',
@@ -102,31 +110,43 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					<MoreHorizIcon />
 				</Button>
 			</Box>
-
-			<Box
+			<CardContent
+				onClick={openPost}
 				sx={{
 					display: 'flex',
-					justifyContent: 'space-between',
-					m: 2,
+					flexDirection: 'column',
+					alignItems: 'center',
+					cursor: 'pointer',
 				}}
 			>
-				<Typography variant='body2'>
-					{post.tags.map((tag) => `#${tag} `)}
+				{/* tags box */}
+				<Box
+					sx={{
+						m: 1,
+					}}
+				>
+					<Typography variant='body2' align='center'>
+						{post.tags.map((tag) => `#${tag} `)}
+					</Typography>
+				</Box>
+				{/* title */}
+				<Typography
+					variant='h5'
+					sx={{
+						px: 2,
+						m: 1,
+					}}
+				>
+					{post.title}
+					{/* message */}
 				</Typography>
-			</Box>
-
-			<Typography
-				gutterBottom
-				variant='h5'
-				sx={{
-					px: 2,
-				}}
-			>
-				{post.title}
-			</Typography>
-
-			<CardContent>
-				<Typography variant='body2' gutterBottom color='textSecondary'>
+				<Typography
+					variant='body2'
+					color='textSecondary'
+					sx={{
+						m: 1,
+					}}
+				>
 					{post.message}
 				</Typography>
 			</CardContent>
@@ -136,7 +156,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					px: 2,
 					pt: 1,
 					display: 'flex',
-					justifyContent: 'space-between',
+					justifyContent: 'space-evenly',
 				}}
 			>
 				<Button
