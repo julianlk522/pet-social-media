@@ -1,13 +1,15 @@
 import express from 'express'
 const router = express.Router()
-import { registerUser, loginUser } from '../controllers/userController.js'
+import {
+	registerUser,
+	loginUser,
+	checkUserPassword,
+} from '../controllers/userController.js'
 
-router
-    .route('/')
-    .post(registerUser)
+router.route('/').post(registerUser)
 
-router
-    .route('/login')
-    .post(loginUser)
+router.route('/login').post(loginUser)
+
+router.route('/authorize').post(checkUserPassword)
 
 export default router

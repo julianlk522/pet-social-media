@@ -156,7 +156,6 @@ function PostDetails() {
 
 						{/* return button */}
 						<Button
-							variant='contained'
 							color='secondary'
 							onClick={() => {
 								navigate('/posts')

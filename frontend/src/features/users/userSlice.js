@@ -52,6 +52,24 @@ export const logoutUser = createAsyncThunk('users/logoutUser', async () => {
 	await userService.logoutUser()
 })
 
+export const checkUserPassword = createAsyncThunk(
+	'users/checkUserPassword',
+	async ({ _id, pass }, thunkAPI) => {
+		try {
+			return await userService.checkUserPassword(_id, pass)
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.resonse.data.message) ||
+				error.message ||
+				error.toString()
+
+			return thunkAPI.rejectWithValue(message)
+		}
+	}
+)
+
 const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -85,6 +103,18 @@ const userSlice = createSlice({
 			})
 			.addCase(logoutUser.fulfilled, (state) => {
 				state.currentUser = null
+			})
+			.addCase(checkUserPassword.pending, (state) => {
+				state.isLoading = true
+			})
+			.addCase(checkUserPassword.fulfilled, (state) => {
+				state.isSuccess = true
+				state.isLoading = false
+			})
+			.addCase(checkUserPassword.rejected, (state, action) => {
+				state.isError = true
+				state.message = action.payload
+				state.isLoading = false
 			})
 	},
 })

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
 import {
 	deletePost,
 	likePost,
 	unlikePost,
 } from '../features/posts/postsSlice.js'
+import { checkUserPassword } from '../features/users/userSlice.js'
 import {
 	Box,
 	Card,
@@ -14,11 +15,13 @@ import {
 	CardMedia,
 	Button,
 	Typography,
+	TextField,
 	Dialog,
 	DialogActions,
 	DialogContent,
 	DialogContentText,
 	DialogTitle,
+	CircularProgress,
 } from '@mui/material'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import DeleteIcon from '@mui/icons-material/Delete'
@@ -30,7 +33,14 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 	const navigate = useNavigate()
 	const likes = post.likes
 
+	const isLoading = useSelector((state) => state.user.isLoading ?? false)
+
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+	const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] =
+		useState(false)
+
+	// passInput state authorization
+	const [passInput, setPassInput] = useState('')
 
 	// liked/likeCount state
 	const [liked, setLiked] = useState(false)
@@ -267,11 +277,92 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 						<Button
 							onClick={() => {
 								setDeleteDialogOpen(false)
-								dispatch(deletePost(post._id))
+								setConfirmDeleteDialogOpen(true)
 							}}
 						>
 							Delete the post
 						</Button>
+					</DialogActions>
+				</Dialog>
+
+				<Dialog
+					open={confirmDeleteDialogOpen}
+					onClose={() => setConfirmDeleteDialogOpen(false)}
+					aria-labelledby='confirm-delete-button-dialog-box'
+					aria-describedby='confirm-delete-dialog-prompt'
+				>
+					<DialogTitle id='confirm-delete-button-dialog-box'>
+						{'Confirm'}
+					</DialogTitle>
+
+					<DialogContent>
+						{isLoading ? (
+							<Box
+								sx={{
+									display: 'flex',
+									height: '50%',
+									minWidth: '20vw',
+									justifyContent: 'center',
+									alignItems: 'center',
+								}}
+							>
+								<CircularProgress
+									color='secondary'
+									size='4rem'
+								/>
+							</Box>
+						) : (
+							<div>
+								<DialogContentText id='confirm-delete-dialog-prompt'>
+									Please re-enter your password to confirm
+									your deletion.
+								</DialogContentText>
+								<TextField
+									autoFocus
+									value={passInput}
+									onChange={(e) => {
+										setPassInput(e.target.value)
+										console.log(e.target.value)
+									}}
+									margin='dense'
+									id='confirm-pass-input'
+									label='Password'
+									type='password'
+									fullWidth
+									variant='standard'
+								/>
+							</div>
+						)}
+					</DialogContent>
+					<DialogActions>
+						<Button
+							onClick={() => setConfirmDeleteDialogOpen(false)}
+						>
+							Return
+						</Button>
+
+						{!isLoading && (
+							<Button
+								onClick={async () => {
+									const response = await dispatch(
+										checkUserPassword({
+											_id: loggedInUser?._id,
+											pass: passInput,
+										})
+									)
+									console.log(response)
+									if (
+										response?.type ===
+										'users/checkUserPassword/fulfilled'
+									) {
+										dispatch(deletePost(post._id))
+										setConfirmDeleteDialogOpen(false)
+									} else return console.log('nope!')
+								}}
+							>
+								Delete
+							</Button>
+						)}
 					</DialogActions>
 				</Dialog>
 			</CardActions>

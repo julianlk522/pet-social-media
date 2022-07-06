@@ -76,3 +76,14 @@ export const loginUser = asyncHandler(async (req, res) => {
 		throw new Error('Incorrect password provided')
 	}
 })
+
+export const checkUserPassword = asyncHandler(async (req, res) => {
+	const { _id, pass } = req.body
+	//  Locate user
+	const user = await UserModel.findById(_id)
+	console.log(user)
+	if (await bcrypt.compare(pass, user.password)) {
+		return res.status(200).json({ status: 'success' })
+	}
+	throw new Error('Password does not match: access denied')
+})

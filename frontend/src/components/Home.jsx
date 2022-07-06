@@ -38,6 +38,9 @@ function Home() {
 			justifyContent='space-between'
 			alignItems='stretch'
 			spacing={3}
+			sx={{
+				p: 2,
+			}}
 		>
 			<Grid item xs={12} lg={9}>
 				<Posts setCurrentPostId={setCurrentPostId} page={currentPage} />
@@ -68,6 +71,7 @@ function Home() {
 
 				{/* search area */}
 				<Paper
+					elevation={6}
 					sx={{
 						display: 'flex',
 						flexDirection: 'column',
