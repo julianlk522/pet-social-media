@@ -1,10 +1,12 @@
-import mongoose from 'mongoose'
 import UserModel from '../models/userModel.js'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcryptjs'
 import asyncHandler from 'express-async-handler'
 
-const createBearerToken = (id) => {
+const createBearerToken = (id: string) => {
+	if (!id || !process.env.JWT_SECRET) {
+		throw new Error('id or JWT secret not found')
+	}
 	return jwt.sign({ id }, process.env.JWT_SECRET)
 }
 
@@ -43,7 +45,7 @@ export const registerUser = asyncHandler(async (req, res) => {
 			_id: user._id,
 			name: user.name,
 			email: user.email,
-			token: createBearerToken(user._id),
+			token: createBearerToken(user._id.toString()),
 			admin: user.isAdmin,
 		})
 	} else {
@@ -68,7 +70,7 @@ export const loginUser = asyncHandler(async (req, res) => {
 			_id: user._id,
 			name: user.name,
 			email: user.email,
-			token: createBearerToken(user._id),
+			token: createBearerToken(user._id.toString()),
 			admin: user.isAdmin,
 		})
 	} else {
@@ -81,9 +83,10 @@ export const checkUserPassword = asyncHandler(async (req, res) => {
 	const { _id, pass } = req.body
 	//  Locate user
 	const user = await UserModel.findById(_id)
+	if (!user) throw new Error('No user found with ID provided')
 	console.log(user)
 	if (await bcrypt.compare(pass, user.password)) {
-		return res.status(200).json({ status: 'success' })
+		res.status(200).json({ status: 'success' })
 	}
 	throw new Error('Password does not match: access denied')
 })

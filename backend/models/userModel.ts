@@ -1,7 +1,14 @@
-import mongoose from 'mongoose'
-const { Schema } = mongoose
+import mongoose, { Schema } from 'mongoose'
 
-const userSchema = new Schema({
+interface User {
+	name: string
+	email: string
+	password: string
+	isAdmin: boolean
+	createdAt: Date | string
+}
+
+const userSchema = new Schema<User>({
 	name: {
 		type: String,
 		required: [true, 'Please add a name'],
@@ -17,7 +24,6 @@ const userSchema = new Schema({
 	},
 	isAdmin: {
 		type: Boolean,
-		required: true,
 		default: false,
 	},
 	createdAt: {

@@ -11,9 +11,9 @@ interface Post {
 }
 
 const postSchema = new Schema<Post>({
-	title: String,
-	message: String,
-	creator: String,
+	title: { type: String, required: [true, 'Please add a title'] },
+	message: { type: String, required: [true, 'Please add a message'] },
+	creator: { type: String, required: [true, 'Please add a creator'] },
 	tags: [String],
 	imgBase64: String,
 	likes: [String],
