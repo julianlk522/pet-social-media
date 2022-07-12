@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import PostModel from '../models/postModel.js'
 import asyncHandler from 'express-async-handler'
 
@@ -13,66 +12,58 @@ export const getPosts = asyncHandler(async (req, res) => {
 })
 
 export const getPaginatedPosts = asyncHandler(async (req, res) => {
-	try {
-		let { limit, index } = req.query
-		if (!limit || !index)
-			throw new Error('Not provided with a page, limit, and index')
-		const totalDocs = await PostModel.countDocuments({})
-		const paginatedPosts = await PostModel.find()
-			.sort({ _id: -1 })
-			.limit(limit)
-			.skip(index)
-		res.status(200).json({
-			postData: paginatedPosts,
-			totalPages: Math.ceil(totalDocs / limit),
-		})
-	} catch (error) {
-		res.status(404).json({ message: error.message })
+	let { limit, index } = req.query
+	if (!limit || !index)
+		throw new Error('Not provided with a page, limit, and index')
+	if (typeof limit !== 'string' || typeof index !== 'string') {
+		res.status(400)
+		throw new Error('Query params must be of type string')
 	}
+	const totalDocs = await PostModel.countDocuments({})
+	const paginatedPosts = await PostModel.find()
+		.sort({ _id: -1 })
+		.limit(parseInt(limit))
+		.skip(parseInt(index))
+	res.status(200).json({
+		postData: paginatedPosts,
+		totalPages: Math.ceil(totalDocs / parseInt(limit)),
+	})
 })
 
-export const createPost = async (req, res) => {
+export const createPost = asyncHandler(async (req, res) => {
 	const post = req.body
 
 	const newPost = new PostModel(post)
+	await newPost.save()
+	res.status(201).json(newPost)
+})
 
-	try {
-		await newPost.save()
+export const updatePost = asyncHandler(async (req, res) => {
+	const { title, message, creator, tags, imgBase64 } = req.body
 
-		res.status(201).json(newPost)
-	} catch (error) {
-		res.status(400).json({ message: error.message })
-	}
-}
+	const updatedPost = await PostModel.findByIdAndUpdate(
+		req.params.id,
+		{ title, message, creator, tags, imgBase64 },
+		{ new: true }
+	)
 
-export const updatePost = async (req, res) => {
-	try {
-		const { title, message, creator, tags, imgBase64 } = req.body
-
-		const updatedPost = await PostModel.findByIdAndUpdate(
-			req.params.id,
-			{ title, message, creator, tags, imgBase64 },
-			{ new: true }
-		)
-
-		res.status(200).json(updatedPost)
-	} catch (error) {
-		res.status(400).json({ message: error.message })
-	}
-}
+	res.status(200).json(updatedPost)
+})
 
 export const likePost = asyncHandler(async (req, res) => {
 	const { postId, userId } = req.params
 	if (!postId) throw new Error('no postId provided')
 	if (!userId) throw new Error('no userId provided')
 	const post = await PostModel.findById(postId)
+
+	if (!post) throw new Error('Could not locate post with specified ID')
 	console.log('old likes', post.likes)
 	console.log('userId', userId)
-	post.likes.push(userId)
+	post?.likes?.push(userId)
 
 	await PostModel.findByIdAndUpdate(
 		postId,
-		{ likes: post.likes.filter((like) => like.match(/[a-zA-Z0-9]/g)) },
+		{ likes: post?.likes?.filter((like) => like.match(/\w/g)) },
 		{ new: true }
 	)
 	console.log('new likes', post.likes)
@@ -84,10 +75,11 @@ export const unlikePost = asyncHandler(async (req, res) => {
 	if (!postId) throw new Error('no postId provided')
 	if (!userId) throw new Error('no userId provided')
 	const post = await PostModel.findById(postId)
+	if (!post) throw new Error('Could not locate post with specified ID')
 	console.log('old likes', post.likes)
 	console.log('userId', userId)
 
-	const newLikes = post.likes.filter((likerId) => likerId !== userId)
+	const newLikes = post?.likes?.filter((likerId) => likerId !== userId)
 	await PostModel.findByIdAndUpdate(
 		postId,
 		{ likes: newLikes },
@@ -97,18 +89,23 @@ export const unlikePost = asyncHandler(async (req, res) => {
 	res.status(200).json(newLikes)
 })
 
-export const deletePost = async (req, res) => {
+export const deletePost = asyncHandler(async (req, res) => {
 	const post = await PostModel.findById(req.params.id)
+	if (!post) throw new Error('Could not locate post with specified ID')
 
 	await PostModel.findByIdAndDelete(req.params.id)
 
 	res.status(200).json(post._id)
-}
+})
 
 export const searchPosts = asyncHandler(async (req, res) => {
 	const { query, tags } = req.query
 
 	if (!query && !tags) throw new Error('no query params provided')
+
+	if (typeof query !== 'string' || typeof tags !== 'string') {
+		throw new Error('query params (query, tags) must be of type string')
+	}
 
 	const title = new RegExp(query, 'i')
 
