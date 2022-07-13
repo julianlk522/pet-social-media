@@ -1,7 +1,8 @@
 import PostModel from '../models/postModel.js'
 import asyncHandler from 'express-async-handler'
+import { Request, Response } from 'express'
 
-export const getPosts = asyncHandler(async (req, res) => {
+export const getPosts = asyncHandler(async (req: Request, res: Response) => {
 	const limit = 4
 	const totalDocs = await PostModel.countDocuments({})
 	const fetchedPosts = await PostModel.find().sort({ _id: -1 }).limit(limit)
@@ -35,7 +36,7 @@ export const createPost = asyncHandler(async (req, res) => {
 
 	const newPost = new PostModel(post)
 	await newPost.save()
-	res.status(201).json(newPost)
+	res.status(201).json({ postData: newPost })
 })
 
 export const updatePost = asyncHandler(async (req, res) => {
@@ -47,7 +48,7 @@ export const updatePost = asyncHandler(async (req, res) => {
 		{ new: true }
 	)
 
-	res.status(200).json(updatedPost)
+	res.status(200).json({ postData: updatedPost })
 })
 
 export const likePost = asyncHandler(async (req, res) => {
@@ -95,7 +96,7 @@ export const deletePost = asyncHandler(async (req, res) => {
 
 	await PostModel.findByIdAndDelete(req.params.id)
 
-	res.status(200).json(post._id)
+	res.status(200).json({ postId: post._id })
 })
 
 export const searchPosts = asyncHandler(async (req, res) => {
@@ -120,5 +121,11 @@ export const searchPosts = asyncHandler(async (req, res) => {
 					tags: { $in: tags.split(',') },
 			  })
 
-	res.status(200).json(queriedPosts)
+	if (!queriedPosts) {
+		res.status(400)
+		throw new Error(
+			'Could not locate posts with query and tags info provided'
+		)
+	}
+	res.status(200).json({ postData: queriedPosts })
 })
