@@ -41,13 +41,14 @@ export const registerUser = asyncHandler(async (req, res) => {
 
 	//  Send back response with new user data
 	if (user) {
-		res.status(201).json({
+		const userData = {
 			_id: user._id,
 			name: user.name,
 			email: user.email,
 			token: createBearerToken(user._id.toString()),
 			admin: user.isAdmin,
-		})
+		}
+		res.status(201).json({ userData })
 	} else {
 		res.status(400)
 		throw new Error('Invalid user data supplied')
@@ -66,12 +67,15 @@ export const loginUser = asyncHandler(async (req, res) => {
 	}
 
 	if (user && (await bcrypt.compare(password, user.password))) {
-		res.status(200).json({
+		const userData = {
 			_id: user._id,
 			name: user.name,
 			email: user.email,
 			token: createBearerToken(user._id.toString()),
 			admin: user.isAdmin,
+		}
+		res.status(200).json({
+			userData,
 		})
 	} else {
 		res.status(401)

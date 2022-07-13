@@ -1,35 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store.js'
+import { FetchedPostData, NewPostData, PostsState } from './postTypes.js'
 import postsService from './postsService.js'
-
-type FetchedPostData = {
-	_id: string
-	title: string
-	message: string
-	tags: string
-	imgBase64?: string
-	creator: string
-	likes?: string[]
-	createdAt: string | Date
-}
-
-type NewPostData = {
-	title: string
-	message: string
-	tags: string
-	imgBase64?: string
-	creator: string
-}
-
-type PostsState = {
-	postsArray: FetchedPostData[]
-	selectedPost: number | null
-	totalPages: string | number | null
-	isError: boolean
-	isSuccess: boolean
-	isLoading: boolean
-	message: string | null
-}
 
 const initialState: PostsState = {
 	postsArray: [],
@@ -60,7 +32,7 @@ export const getPosts = createAsyncThunk(
 )
 
 export const getPaginatedPosts = createAsyncThunk<
-	{ success?: boolean; postData?: [FetchedPostData]; totalPages?: string },
+	{ postData: [FetchedPostData]; totalPages: string },
 	{ page: string; limit?: string },
 	{ state: RootState }
 >('posts/getPaginatedPosts', async ({ page, limit }, thunkAPI) => {
@@ -82,9 +54,9 @@ export const createPost = createAsyncThunk<
 	{ postData: FetchedPostData },
 	{ newPost: NewPostData },
 	{ state: RootState }
->('posts/createPost', async (newPost, thunkAPI) => {
+>('posts/createPost', async ({ newPost }, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().user.currentUser.token
+		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.createPost(newPost, token)
 	} catch (error) {
 		const message =
@@ -109,7 +81,7 @@ export const updatePost = createAsyncThunk<
 		thunkAPI
 	) => {
 		try {
-			const token = thunkAPI.getState().user.currentUser.token
+			const token = thunkAPI.getState().user?.currentUser?.token
 			return await postsService.updatePost(postId, updatedPost, token)
 		} catch (error) {
 			const message =
@@ -125,13 +97,13 @@ export const updatePost = createAsyncThunk<
 )
 
 export const likePost = createAsyncThunk<
-	{ success: boolean },
+	{ likes: [] },
 	{ postId: string },
 	{ state: RootState }
->('posts/likePost', async (postId, thunkAPI) => {
+>('posts/likePost', async ({ postId }, thunkAPI) => {
 	try {
-		const currentUserId = thunkAPI.getState().user.currentUser._id
-		const token = thunkAPI.getState().user.currentUser.token
+		const currentUserId = thunkAPI.getState().user?.currentUser?._id
+		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.likePost(postId, currentUserId, token)
 	} catch (error) {
 		const message =
@@ -146,13 +118,13 @@ export const likePost = createAsyncThunk<
 })
 
 export const unlikePost = createAsyncThunk<
-	{ success: boolean },
+	{ likes: [] },
 	{ postId: string },
 	{ state: RootState }
->('posts/unlikePost', async (postId, thunkAPI) => {
+>('posts/unlikePost', async ({ postId }, thunkAPI) => {
 	try {
-		const currentUserId = thunkAPI.getState().user.currentUser._id
-		const token = thunkAPI.getState().user.currentUser.token
+		const currentUserId = thunkAPI.getState().user?.currentUser?._id
+		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.unlikePost(postId, currentUserId, token)
 	} catch (error) {
 		const message =
@@ -167,12 +139,12 @@ export const unlikePost = createAsyncThunk<
 })
 
 export const deletePost = createAsyncThunk<
-	{ success?: boolean; postId?: string },
+	{ postId: string },
 	{ postId: string },
 	{ state: RootState }
->('posts/deletePost', async (postId, thunkAPI) => {
+>('posts/deletePost', async ({ postId }, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().user.currentUser.token
+		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.deletePost(postId, token)
 	} catch (error) {
 		const message =
@@ -187,8 +159,8 @@ export const deletePost = createAsyncThunk<
 })
 
 export const searchPosts = createAsyncThunk<
-	{ success?: boolean; postData?: [FetchedPostData] },
-	{ query: string; tags: [string] },
+	{ postData: [FetchedPostData] },
+	{ query: string; tags: string[] | undefined },
 	{ state: RootState }
 >('posts/searchPosts', async ({ query, tags }, thunkAPI) => {
 	try {

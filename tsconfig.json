@@ -19,6 +19,6 @@
 	"ts-node": {
 		"esm": true
 	},
-	"include": ["backend/**/*"],
+	"include": ["backend/**/*", "frontend/src/global.d.ts"],
 	"exclude": ["node_modules"]
 }

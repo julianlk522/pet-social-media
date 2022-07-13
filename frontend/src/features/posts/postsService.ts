@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { NewPostData } from './postTypes'
 
 const url = 'http://localhost:5000/posts'
 
@@ -8,9 +9,15 @@ const getPosts = async () => {
 	return postsData
 }
 
-const getPaginatedPosts = async (page, limit) => {
+const getPaginatedPosts = async (
+	page: string | number,
+	limit: string | number | undefined
+) => {
 	if (!page) page = 1
 	if (!limit) limit = 4
+
+	if (typeof page === 'string') page = parseInt(page)
+	if (typeof limit === 'string') limit = parseInt(limit)
 
 	//	starting index in posts db for desired posts AKA number of skipped documents
 	const index = (page - 1) * limit
@@ -21,7 +28,7 @@ const getPaginatedPosts = async (page, limit) => {
 	return postsData
 }
 
-const createPost = async (newPost, token) => {
+const createPost = async (newPost: NewPostData, token: string | undefined) => {
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
@@ -32,7 +39,11 @@ const createPost = async (newPost, token) => {
 	return response.data
 }
 
-const updatePost = async (postId, updatedPost, token) => {
+const updatePost = async (
+	postId: string,
+	updatedPost: NewPostData,
+	token: string | undefined
+) => {
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
@@ -51,7 +62,11 @@ const updatePost = async (postId, updatedPost, token) => {
 	}
 }
 
-const likePost = async (postId, userId, token) => {
+const likePost = async (
+	postId: string,
+	userId: string | undefined,
+	token: string | undefined
+) => {
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
@@ -70,7 +85,11 @@ const likePost = async (postId, userId, token) => {
 	}
 }
 
-const unlikePost = async (postId, userId, token) => {
+const unlikePost = async (
+	postId: string,
+	userId: string | undefined,
+	token: string | undefined
+) => {
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
@@ -89,7 +108,7 @@ const unlikePost = async (postId, userId, token) => {
 	}
 }
 
-const deletePost = async (postId, token) => {
+const deletePost = async (postId: string, token: string | undefined) => {
 	const config = {
 		headers: {
 			authorization: `Bearer ${token}`,
@@ -104,7 +123,7 @@ const deletePost = async (postId, token) => {
 	}
 }
 
-const searchPosts = async (query, tags) => {
+const searchPosts = async (query: string, tags?: string) => {
 	try {
 		const response =
 			query && tags

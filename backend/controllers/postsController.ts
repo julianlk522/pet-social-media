@@ -68,7 +68,7 @@ export const likePost = asyncHandler(async (req, res) => {
 		{ new: true }
 	)
 	console.log('new likes', post.likes)
-	res.status(200).json(post.likes)
+	res.status(200).json({ likes: post.likes })
 })
 
 export const unlikePost = asyncHandler(async (req, res) => {
@@ -87,7 +87,7 @@ export const unlikePost = asyncHandler(async (req, res) => {
 		{ new: true }
 	)
 	console.log('new likes', newLikes)
-	res.status(200).json(newLikes)
+	res.status(200).json({ likes: newLikes })
 })
 
 export const deletePost = asyncHandler(async (req, res) => {
