@@ -8,8 +8,8 @@ import {
 	Typography,
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import React, { ChangeEvent, useState } from 'react'
+import { useAppDispatch } from '../app/hooks/rtkHooks'
 import { useNavigate } from 'react-router-dom'
 import {
 	registerUser,
@@ -18,7 +18,7 @@ import {
 } from '../features/users/userSlice'
 
 function Auth() {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 
 	const [isSignUp, setIsSignUp] = useState(true)
@@ -63,7 +63,7 @@ function Auth() {
 		}
 	}
 
-	const handleChange = (e) => {
+	const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setFormData({
 			...formData,
 			[e.target.name]: e.target.value,
@@ -115,7 +115,6 @@ function Auth() {
 				>
 					<form onSubmit={handleSubmit}>
 						<Container
-							spacing={2}
 							sx={{
 								display: 'flex',
 								flexDirection: 'column',
@@ -182,7 +181,6 @@ function Auth() {
 									setIsSignUp(!isSignUp)
 									setFormData({
 										name: '',
-										lastName: '',
 										email: '',
 										password: '',
 									})

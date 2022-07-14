@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useAppSelector } from './rtkHooks'
 
 export const useAuthStatus = () => {
 	const [loggedIn, setLoggedIn] = useState(false)
 	const [firstName, setFirstName] = useState('')
 	const [firstLetter, setFirstLetter] = useState('')
 
-	const loggedInUser = useSelector((state) => state.user.currentUser)
+	const loggedInUser = useAppSelector((state) => state.user.currentUser)
 
 	//  set loggedIn based on state value
 	useEffect(() => {

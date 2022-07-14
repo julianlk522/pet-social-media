@@ -2,7 +2,7 @@ export type FetchedPostData = {
 	_id: string
 	title: string
 	message: string
-	tags: string
+	tags: string[]
 	imgBase64?: string
 	creator: string
 	likes?: string[]
@@ -12,7 +12,7 @@ export type FetchedPostData = {
 export type NewPostData = {
 	title: string
 	message: string
-	tags: string
+	tags: string[]
 	imgBase64?: string
 	creator: string
 }

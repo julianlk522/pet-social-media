@@ -52,9 +52,9 @@ export const getPaginatedPosts = createAsyncThunk<
 
 export const createPost = createAsyncThunk<
 	{ postData: FetchedPostData },
-	{ newPost: NewPostData },
+	NewPostData,
 	{ state: RootState }
->('posts/createPost', async ({ newPost }, thunkAPI) => {
+>('posts/createPost', async (newPost, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.createPost(newPost, token)

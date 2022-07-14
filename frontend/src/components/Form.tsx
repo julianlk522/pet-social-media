@@ -1,36 +1,46 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import { TextField, Button, Typography, Paper, Box } from '@mui/material'
 import FileBase from 'react-file-base64'
-import { useDispatch, useSelector } from 'react-redux'
-import { useAuthStatus } from '../hooks/useAuthStatus.js'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
+import { useAuthStatus } from '../app/hooks/useAuthStatus'
 import { createPost, updatePost } from '../features/posts/postsSlice.js'
 
 function Form({ currentPostId, setCurrentPostId }) {
-	const [postData, setPostData] = useState({
+	type FormData = {
+		title: string
+		message: string
+		tags: string[]
+		imgBase64?: string | undefined
+	}
+
+	const [formData, setFormData] = useState<FormData>({
 		title: '',
 		message: '',
-		tags: '',
+		tags: [],
 		imgBase64: '',
 	})
 
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const { loggedIn, loggedInUser } = useAuthStatus()
-	const currentPost = useSelector((state) =>
+	const currentPost = useAppSelector((state) =>
 		currentPostId
 			? state.posts.postsArray.find((post) => post._id === currentPostId)
 			: null
 	)
 
 	useEffect(() => {
-		currentPost && setPostData(currentPost)
+		if (currentPost) {
+			const { title, message, tags, imgBase64 } = currentPost
+			setFormData({ title, message, tags, imgBase64 })
+		}
 	}, [currentPost])
 
-	const handleSubmit = (e) => {
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
 		const updatedPostData = {
-			...postData,
-			creator: loggedInUser.name,
+			...formData,
+			creator: loggedInUser !== null ? loggedInUser.name : 'Creator',
 		}
 
 		if (currentPostId) {
@@ -43,7 +53,7 @@ function Form({ currentPostId, setCurrentPostId }) {
 
 	const handleClear = () => {
 		setCurrentPostId(null)
-		setPostData({
+		setFormData({
 			title: '',
 			message: '',
 			tags: [],
@@ -91,10 +101,10 @@ function Form({ currentPostId, setCurrentPostId }) {
 					variant='outlined'
 					label='Title'
 					fullWidth
-					value={postData.title}
+					value={formData.title}
 					onChange={(e) =>
-						setPostData({
-							...postData,
+						setFormData({
+							...formData,
 							title: e.target.value,
 						})
 					}
@@ -105,10 +115,10 @@ function Form({ currentPostId, setCurrentPostId }) {
 					variant='outlined'
 					label='Message'
 					fullWidth
-					value={postData.message}
+					value={formData.message}
 					onChange={(e) =>
-						setPostData({
-							...postData,
+						setFormData({
+							...formData,
 							message: e.target.value,
 						})
 					}
@@ -119,10 +129,10 @@ function Form({ currentPostId, setCurrentPostId }) {
 					variant='outlined'
 					label='Tags'
 					fullWidth
-					value={postData.tags}
+					value={formData.tags}
 					onChange={(e) =>
-						setPostData({
-							...postData,
+						setFormData({
+							...formData,
 							tags: e.target.value.split(','),
 						})
 					}
@@ -138,8 +148,8 @@ function Form({ currentPostId, setCurrentPostId }) {
 						type='file'
 						multiple={false}
 						onDone={({ base64 }) =>
-							setPostData({
-								...postData,
+							setFormData({
+								...formData,
 								imgBase64: base64,
 							})
 						}

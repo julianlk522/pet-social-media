@@ -8,8 +8,8 @@ const url = 'http://localhost:5000/users'
 //     }
 // }
 
-const registerUser = async (registerData: RegisterData) => {
-	const response = await axios.post(url, registerData)
+const registerUser = async (signUpData: RegisterData) => {
+	const response = await axios.post(url, signUpData)
 
 	if (response.data)
 		localStorage.setItem('user', JSON.stringify(response.data))

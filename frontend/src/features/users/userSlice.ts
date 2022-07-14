@@ -16,11 +16,11 @@ const initialState: UserState = {
 
 export const registerUser = createAsyncThunk<
 	{ userData: UserData },
-	{ registerData: RegisterData },
+	RegisterData,
 	{ state: RootState }
->('users/registerUser', async ({ registerData }, thunkAPI) => {
+>('users/registerUser', async (signUpData, thunkAPI) => {
 	try {
-		return await userService.registerUser(registerData)
+		return await userService.registerUser(signUpData)
 	} catch (error) {
 		const message =
 			(error.response &&
@@ -35,9 +35,9 @@ export const registerUser = createAsyncThunk<
 
 export const loginUser = createAsyncThunk<
 	{ userData: UserData },
-	{ loginData: LoginData },
+	LoginData,
 	{ state: RootState }
->('users/loginUser', async ({ loginData }, thunkAPI) => {
+>('users/loginUser', async (loginData, thunkAPI) => {
 	try {
 		return await userService.loginUser(loginData)
 	} catch (error) {
