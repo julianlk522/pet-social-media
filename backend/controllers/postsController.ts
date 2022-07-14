@@ -1,4 +1,4 @@
-import PostModel from '../models/postModel.js'
+import PostModel from '../models/postModel'
 import asyncHandler from 'express-async-handler'
 import { Request, Response } from 'express'
 

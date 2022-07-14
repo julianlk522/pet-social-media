@@ -9,8 +9,8 @@ import {
 	unlikePost,
 	searchPosts,
 	getPaginatedPosts,
-} from '../controllers/postsController.js'
-import authMiddleware from '../middleware/authMiddleware.js'
+} from '../controllers/postsController'
+import authMiddleware from '../middleware/authMiddleware'
 
 router.route('/').get(getPosts).post(authMiddleware, createPost)
 

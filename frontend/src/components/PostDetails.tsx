@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { useAppDispatch } from '../app/hooks/rtkHooks.js'
-import { likePost, unlikePost } from '../features/posts/postsSlice.js'
+import { useAppDispatch } from '../app/hooks/rtkHooks'
+import { likePost, unlikePost } from '../features/posts/postsSlice'
 import { FetchedPostData } from '../features/posts/postTypes'
 import { UserState } from '../features/users/userTypes'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'

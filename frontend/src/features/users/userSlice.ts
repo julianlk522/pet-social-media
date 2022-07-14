@@ -21,7 +21,7 @@ export const registerUser = createAsyncThunk<
 >('users/registerUser', async (signUpData, thunkAPI) => {
 	try {
 		return await userService.registerUser(signUpData)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -40,7 +40,7 @@ export const loginUser = createAsyncThunk<
 >('users/loginUser', async (loginData, thunkAPI) => {
 	try {
 		return await userService.loginUser(loginData)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -63,7 +63,7 @@ export const checkUserPassword = createAsyncThunk<
 >('users/checkUserPassword', async ({ _id, pass }, thunkAPI) => {
 	try {
 		return await userService.checkUserPassword(_id, pass)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&

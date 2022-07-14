@@ -57,7 +57,7 @@ const updatePost = async (
 			config
 		)
 		return response.data
-	} catch (error) {
+	} catch (error: any) {
 		return error.message
 	}
 }
@@ -103,8 +103,8 @@ const unlikePost = async (
 			config
 		)
 		return response.data
-	} catch (error) {
-		return console.log(error)
+	} catch (error: any) {
+		return error.message
 	}
 }
 
@@ -118,7 +118,7 @@ const deletePost = async (postId: string, token: string | undefined) => {
 	try {
 		const response = await axios.delete(`${url}/${postId}`, config)
 		return response.data
-	} catch (error) {
+	} catch (error: any) {
 		return error.message
 	}
 }
@@ -133,7 +133,7 @@ const searchPosts = async (query: string, tags?: string) => {
 				: await axios.get(`${url}/search?query=${query}`)
 
 		return response.data
-	} catch (error) {
+	} catch (error: any) {
 		return error.message
 	}
 }

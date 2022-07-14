@@ -1,11 +1,20 @@
-import React, { useState, useEffect, FormEvent } from 'react'
+import React, { useState, useEffect, FormEvent, Dispatch } from 'react'
 import { TextField, Button, Typography, Paper, Box } from '@mui/material'
 import FileBase from 'react-file-base64'
 import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
 import { useAuthStatus } from '../app/hooks/useAuthStatus'
-import { createPost, updatePost } from '../features/posts/postsSlice.js'
+import { createPost, updatePost } from '../features/posts/postsSlice'
 
-function Form({ currentPostId, setCurrentPostId }) {
+type FormProps = {
+	currentPostId: string
+	setCurrentPostId: Dispatch<any>
+}
+
+type FileBaseProps = {
+	base64: string
+}
+
+function Form({ currentPostId, setCurrentPostId }: FormProps) {
 	type FormData = {
 		title: string
 		message: string
@@ -147,7 +156,7 @@ function Form({ currentPostId, setCurrentPostId }) {
 					<FileBase
 						type='file'
 						multiple={false}
-						onDone={({ base64 }) =>
+						onDone={({ base64 }: FileBaseProps) =>
 							setFormData({
 								...formData,
 								imgBase64: base64,

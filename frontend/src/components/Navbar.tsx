@@ -15,7 +15,6 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from '@mui/material'
-const dogLogo = require('../assets/dogLogo.png') as string
 import {
 	deepOrange,
 	amber,
@@ -28,6 +27,7 @@ import {
 	green,
 } from '@mui/material/colors'
 import BuildCircleIcon from '@mui/icons-material/BuildCircle'
+const dogLogo = require('../assets/dogLogo.png') as string
 
 function Navbar() {
 	const dispatch = useAppDispatch()

@@ -8,7 +8,7 @@ import {
 	Typography,
 } from '@mui/material'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useAppDispatch } from '../app/hooks/rtkHooks'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -30,7 +30,7 @@ function Auth() {
 
 	const { name, email, password } = formData
 
-	const handleSubmit = async (e) => {
+	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
 		if (isSignUp) {

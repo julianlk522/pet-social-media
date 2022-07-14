@@ -9,7 +9,7 @@ import { Container } from '@mui/material'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
 import Auth from './components/Auth'
-import PostDetails from './components/PostDetails.jsx'
+import PostDetails from './components/PostDetails'
 // svg background source: https://bgjar.com/cloudy
 const bgSvg = require('./assets/bg.svg') as string
 

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import asyncHandler from 'express-async-handler'
-import UserModel from '../models/userModel.js'
+import UserModel from '../models/userModel'
 
 interface AuthRequest extends Request {
 	user?: any
@@ -40,7 +40,7 @@ const protect = asyncHandler(
 			next()
 		} else {
 			res.status(401)
-			throw new Error('Invalid bearer token provided', token)
+			throw new Error(`Invalid bearer token provided, ${token}`)
 		}
 	}
 )

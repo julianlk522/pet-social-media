@@ -1,4 +1,10 @@
 {
+	"ts-node": {
+		// these options are overrides used only by ts-node
+		"compilerOptions": {
+			"module": "commonjs"
+		}
+	},
 	"compilerOptions": {
 		"target": "es6",
 		"lib": ["dom", "dom.iterable", "esnext"],
@@ -9,7 +15,7 @@
 		"strict": true,
 		"forceConsistentCasingInFileNames": true,
 		"noFallthroughCasesInSwitch": true,
-		"module": "esnext",
+		"module": "CommonJS",
 		"moduleResolution": "node",
 		"resolveJsonModule": true,
 		"isolatedModules": true,
@@ -19,9 +25,13 @@
 		"noImplicitThis": true,
 		"strictNullChecks": true
 	},
-	"ts-node": {
-		"esm": true
-	},
-	"include": ["backend/**/*", "frontend/global.d.ts"],
+	"include": [
+		"frontend/global.d.ts",
+		"*.ts",
+		"*.tsx",
+		"src",
+		"src/*.ts",
+		"src/*.tsx"
+	],
 	"exclude": ["node_modules"]
 }

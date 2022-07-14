@@ -1,6 +1,6 @@
 import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
-import { searchPosts } from '../features/posts/postsSlice.js'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
+import { searchPosts } from '../features/posts/postsSlice'
 import { useParams, useNavigate } from 'react-router-dom'
 import Posts from './Posts'
 import Form from './Form'
@@ -27,7 +27,7 @@ function Home() {
 	//	pagination state
 	const { page } = useParams()
 	const [currentPage, setCurrentPage] = useState(
-		page !== undefined ? parseInt(page) : null
+		page !== undefined ? page : String(1)
 	)
 
 	const totalPages = useAppSelector((state) => state.posts?.totalPages)
@@ -61,11 +61,11 @@ function Home() {
 				>
 					<Pagination
 						count={totalPages ? parseInt(totalPages) : 5}
-						page={currentPage || 1}
+						page={parseInt(currentPage)}
 						color='secondary'
 						renderItem={(item) => <PaginationItem {...item} />}
 						onChange={(e: ChangeEvent<any>) => {
-							setCurrentPage(parseInt(e.target.innerText))
+							setCurrentPage(e.target.innerText)
 							navigate(`/posts/page${e.target.innerText}`)
 						}}
 					/>
@@ -172,7 +172,7 @@ function Home() {
 					</Button>
 				</Paper>
 				<Form
-					currentPostId={currentPostId}
+					currentPostId={currentPostId ?? ''}
 					setCurrentPostId={setCurrentPostId}
 				/>
 			</Grid>

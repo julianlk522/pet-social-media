@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
-import { getPaginatedPosts, getPosts } from '../features/posts/postsSlice.js'
-import { useAuthStatus } from '../app/hooks/useAuthStatus.js'
-import Post from './Post.js'
+import React, { Dispatch, useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
+import { getPaginatedPosts, getPosts } from '../features/posts/postsSlice'
+import { useAuthStatus } from '../app/hooks/useAuthStatus'
+import Post from './Post'
 import { CircularProgress, Grid, Box } from '@mui/material'
 
-function Posts({ setCurrentPostId, page }) {
+type PostsProps = {
+	setCurrentPostId: Dispatch<any>
+	page: string
+}
+
+function Posts({ setCurrentPostId, page }: PostsProps) {
 	const dispatch = useAppDispatch()
 	const isLoading = useAppSelector((state) => state.posts.isLoading)
 	const posts = useAppSelector((state) => state.posts.postsArray)

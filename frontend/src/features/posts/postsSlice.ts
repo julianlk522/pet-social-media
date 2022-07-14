@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { RootState } from '../../app/store.js'
-import { FetchedPostData, NewPostData, PostsState } from './postTypes.js'
-import postsService from './postsService.js'
+import { RootState } from '../../app/store'
+import { FetchedPostData, NewPostData, PostsState } from './postTypes'
+import postsService from './postsService'
 
 const initialState: PostsState = {
 	postsArray: [],
@@ -18,10 +18,10 @@ export const getPosts = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			return await postsService.getPosts()
-		} catch (error) {
+		} catch (error: any) {
 			const message =
 				(error.response &&
-					error.response.data &&
+					error?.response.data &&
 					error.resonse.data.message) ||
 				error.message ||
 				error.toString()
@@ -38,7 +38,7 @@ export const getPaginatedPosts = createAsyncThunk<
 >('posts/getPaginatedPosts', async ({ page, limit }, thunkAPI) => {
 	try {
 		return await postsService.getPaginatedPosts(page, limit)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -58,7 +58,7 @@ export const createPost = createAsyncThunk<
 	try {
 		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.createPost(newPost, token)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -83,7 +83,7 @@ export const updatePost = createAsyncThunk<
 		try {
 			const token = thunkAPI.getState().user?.currentUser?.token
 			return await postsService.updatePost(postId, updatedPost, token)
-		} catch (error) {
+		} catch (error: any) {
 			const message =
 				(error.response &&
 					error.response.data &&
@@ -105,7 +105,7 @@ export const likePost = createAsyncThunk<
 		const currentUserId = thunkAPI.getState().user?.currentUser?._id
 		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.likePost(postId, currentUserId, token)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -126,7 +126,7 @@ export const unlikePost = createAsyncThunk<
 		const currentUserId = thunkAPI.getState().user?.currentUser?._id
 		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.unlikePost(postId, currentUserId, token)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -146,7 +146,7 @@ export const deletePost = createAsyncThunk<
 	try {
 		const token = thunkAPI.getState().user?.currentUser?.token
 		return await postsService.deletePost(postId, token)
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&
@@ -168,7 +168,7 @@ export const searchPosts = createAsyncThunk<
 			? console.log(`query: ${query}, tags: ${tags.join(',')}`)
 			: console.log(`query: ${query}`)
 		return await postsService.searchPosts(query, tags && tags.join(','))
-	} catch (error) {
+	} catch (error: any) {
 		const message =
 			(error.response &&
 				error.response.data &&

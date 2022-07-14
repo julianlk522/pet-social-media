@@ -4,7 +4,7 @@ import {
 	registerUser,
 	loginUser,
 	checkUserPassword,
-} from '../controllers/userController.js'
+} from '../controllers/userController'
 
 router.route('/').post(registerUser)
 

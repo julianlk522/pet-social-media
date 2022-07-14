@@ -2,7 +2,7 @@ import 'dotenv/config'
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
-import { errorHandler } from './middleware/errorMiddleware.js'
+import { errorHandler } from './middleware/errorMiddleware'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -30,10 +30,10 @@ app.use(errorHandler)
 
 //  Routes
 
-import postRoutes from './routes/postRoutes.js'
+import postRoutes from './routes/postRoutes'
 app.use('/posts', postRoutes)
 
-import userRoutes from './routes/userRoutes.js'
+import userRoutes from './routes/userRoutes'
 app.use('/users', userRoutes)
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))

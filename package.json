@@ -3,7 +3,6 @@
 	"version": "1.0.0",
 	"description": "",
 	"main": "server.ts",
-	"type": "module",
 	"scripts": {
 		"server": "nodemon backend/server.ts",
 		"client": "npm start --prefix frontend",
@@ -32,6 +31,7 @@
 		"@types/react": "^18.0.15",
 		"@types/react-dom": "^18.0.6",
 		"nodemon": "^2.0.16",
+		"ts-loader": "^9.3.1",
 		"ts-node": "^10.8.2",
 		"typescript": "^4.7.4"
 	}

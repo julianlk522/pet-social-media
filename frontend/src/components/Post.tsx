@@ -1,12 +1,10 @@
-import React, { useState, useEffect } from 'react'
-import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
+import React, { useState, useEffect, Dispatch } from 'react'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
 import { useNavigate } from 'react-router-dom'
-import {
-	deletePost,
-	likePost,
-	unlikePost,
-} from '../features/posts/postsSlice.js'
-import { checkUserPassword } from '../features/users/userSlice.js'
+import { deletePost, likePost, unlikePost } from '../features/posts/postsSlice'
+import { FetchedPostData } from '../features/posts/postTypes'
+import { checkUserPassword } from '../features/users/userSlice'
+import { UserData } from '../features/users/userTypes'
 import {
 	Box,
 	Card,
@@ -28,10 +26,22 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { formatDistanceToNow } from 'date-fns'
 
-function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
+type PostProps = {
+	post: FetchedPostData
+	setCurrentPostId: Dispatch<any>
+	featuresDisabled: boolean
+	loggedInUser: UserData | null
+}
+
+function Post({
+	post,
+	setCurrentPostId,
+	featuresDisabled,
+	loggedInUser,
+}: PostProps) {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const likes = post.likes
+	const likes = post?.likes
 
 	const isLoading = useAppSelector((state) => state.user.isLoading ?? false)
 
@@ -44,11 +54,13 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 
 	// liked/likeCount state
 	const [liked, setLiked] = useState(false)
-	const [likeCount, setLikeCount] = useState(likes?.length)
+	const [likeCount, setLikeCount] = useState(
+		likes !== undefined ? likes.length : 0
+	)
 
 	useEffect(() => {
 		const checkIfUserLiked = () => {
-			if (likes?.includes(loggedInUser?._id)) {
+			if (loggedInUser?._id && likes?.includes(loggedInUser._id)) {
 				setLiked(true)
 			}
 		}
@@ -100,7 +112,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 			>
 				<Typography variant='h6'>{post.creator}</Typography>
 				<Typography variant='body2'>
-					{formatDistanceToNow(new Date(post.createdAt))}
+					{formatDistanceToNow(new Date(post?.createdAt))}
 				</Typography>
 			</Box>
 			{/* edit button */}
@@ -197,10 +209,10 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 					onClick={(e) => {
 						e.preventDefault()
 						if (!liked) {
-							dispatch(likePost(post._id))
+							dispatch(likePost({ postId: post._id }))
 							setLikeCount((likeCount) => likeCount + 1)
 						} else {
-							dispatch(unlikePost(post._id))
+							dispatch(unlikePost({ postId: post._id }))
 							setLikeCount((likeCount) => likeCount - 1)
 						}
 						setLiked(!liked)
@@ -341,7 +353,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 							Return
 						</Button>
 
-						{!isLoading && (
+						{!isLoading && loggedInUser && (
 							<Button
 								onClick={async () => {
 									const response = await dispatch(
@@ -355,7 +367,9 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 										response?.type ===
 										'users/checkUserPassword/fulfilled'
 									) {
-										dispatch(deletePost(post._id))
+										dispatch(
+											deletePost({ postId: post._id })
+										)
 										setConfirmDeleteDialogOpen(false)
 									} else return console.log('nope!')
 								}}
