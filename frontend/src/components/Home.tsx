@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
 import { searchPosts } from '../features/posts/postsSlice.js'
 import { useParams, useNavigate } from 'react-router-dom'
-import Posts from './Posts.jsx'
-import Form from './Form.jsx'
+import Posts from './Posts'
+import Form from './Form'
 import {
 	Grid,
 	Paper,
@@ -20,16 +20,18 @@ function Home() {
 	const [currentPostId, setCurrentPostId] = useState(null)
 
 	//	post search state
-	const [searchTags, setSearchTags] = useState([])
+	const [searchTags, setSearchTags] = useState<any[]>([''])
 	const [searchString, setSearchString] = useState('')
 	const [currentSearchTag, setCurrentSearchTag] = useState('')
 
 	//	pagination state
 	const { page } = useParams()
-	const [currentPage, setCurrentPage] = useState(parseInt(page) || null)
+	const [currentPage, setCurrentPage] = useState(
+		page !== undefined ? parseInt(page) : null
+	)
 
-	const totalPages = useSelector((state) => state.posts?.totalPages)
-	const dispatch = useDispatch()
+	const totalPages = useAppSelector((state) => state.posts?.totalPages)
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 
 	return (
@@ -58,11 +60,11 @@ function Home() {
 					}}
 				>
 					<Pagination
-						count={totalPages || 5}
+						count={totalPages ? parseInt(totalPages) : 5}
 						page={currentPage || 1}
 						color='secondary'
 						renderItem={(item) => <PaginationItem {...item} />}
-						onChange={(e) => {
+						onChange={(e: ChangeEvent<any>) => {
 							setCurrentPage(parseInt(e.target.innerText))
 							navigate(`/posts/page${e.target.innerText}`)
 						}}
@@ -106,31 +108,27 @@ function Home() {
 						options={[]}
 						value={searchTags}
 						inputValue={currentSearchTag}
-						onInputChange={(e) => {
-							setCurrentSearchTag(e.target.value)
+						onInputChange={(e: SyntheticEvent<Element>) => {
+							const target = e.target as HTMLInputElement
+							setCurrentSearchTag(target.value)
 						}}
 						freeSolo
 						size='small'
 						onChange={(e, value) => {
 							e.preventDefault()
 							console.log(value)
-							if (
-								value.length &&
-								value.some((tag) => !tag.trim())
-							) {
-								console.log('found whitespace')
-								return
-							}
-							setSearchTags(value)
-							setCurrentSearchTag('')
+							if (!value.includes(' ')) {
+								setSearchTags(value)
+								setCurrentSearchTag('')
+							} else return console.log('no whitespace!')
 						}}
 						renderTags={(value, getTagProps) =>
-							value.map((option, idx) => (
+							value.map((option, index) => (
 								<Chip
-									key={idx}
 									variant='outlined'
 									label={option}
-									{...getTagProps({ idx })}
+									{...getTagProps({ index })}
+									key={index}
 								/>
 							))
 						}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
 import { useNavigate } from 'react-router-dom'
 import {
 	deletePost,
@@ -29,11 +29,11 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz'
 import { formatDistanceToNow } from 'date-fns'
 
 function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const likes = post.likes
 
-	const isLoading = useSelector((state) => state.user.isLoading ?? false)
+	const isLoading = useAppSelector((state) => state.user.isLoading ?? false)
 
 	const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 	const [confirmDeleteDialogOpen, setConfirmDeleteDialogOpen] =
@@ -217,7 +217,7 @@ function Post({ post, setCurrentPostId, featuresDisabled, loggedInUser }) {
 						color={liked ? 'primary' : 'action'}
 						sx={{
 							mr: 1,
-							transform: liked && 'scale(1.1)',
+							transform: liked ? 'scale(1.1)' : '',
 						}}
 					/>
 					<span

@@ -6,12 +6,12 @@ import {
 	Navigate,
 } from 'react-router-dom'
 import { Container } from '@mui/material'
-import Navbar from './components/Navbar.jsx'
-import Home from './components/Home.jsx'
-import Auth from './components/Auth.jsx'
+import Navbar from './components/Navbar'
+import Home from './components/Home'
+import Auth from './components/Auth'
 import PostDetails from './components/PostDetails.jsx'
 // svg background source: https://bgjar.com/cloudy
-import bgSvg from './assets/bg.svg'
+const bgSvg = require('./assets/bg.svg') as string
 
 function App() {
 	return (
@@ -32,14 +32,13 @@ function App() {
 				<Navbar />
 				<Routes>
 					<Route
-						exact
 						path='/'
 						element={<Navigate to='/posts' replace={true} />}
 					/>
-					<Route exact path='/posts' element={<Home />} />
-					<Route exact path='/posts/page:page' element={<Home />} />
-					<Route exact path='/posts/:id' element={<PostDetails />} />
-					<Route exact path='/auth' element={<Auth />} />
+					<Route path='/posts' element={<Home />} />
+					<Route path='/posts/page:page' element={<Home />} />
+					<Route path='/posts/:id' element={<PostDetails />} />
+					<Route path='/auth' element={<Auth />} />
 				</Routes>
 			</Container>
 		</Router>

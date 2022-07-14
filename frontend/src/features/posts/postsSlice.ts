@@ -160,7 +160,7 @@ export const deletePost = createAsyncThunk<
 
 export const searchPosts = createAsyncThunk<
 	{ postData: [FetchedPostData] },
-	{ query: string; tags: string[] | undefined },
+	{ query: string; tags?: string[] | undefined },
 	{ state: RootState }
 >('posts/searchPosts', async ({ query, tags }, thunkAPI) => {
 	try {

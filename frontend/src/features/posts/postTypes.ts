@@ -20,7 +20,7 @@ export type NewPostData = {
 export type PostsState = {
 	postsArray: FetchedPostData[]
 	selectedPost: number | null
-	totalPages: string | number | null
+	totalPages: string | null
 	isError: boolean
 	isSuccess: boolean
 	isLoading: boolean

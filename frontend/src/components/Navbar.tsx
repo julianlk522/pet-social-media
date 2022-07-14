@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '../app/hooks/rtkHooks'
 import { logoutUser } from '../features/users/userSlice'
-import { useAuthStatus } from '../hooks/useAuthStatus'
+import { useAuthStatus } from '../app/hooks/useAuthStatus'
 import {
 	Box,
 	AppBar,
@@ -15,7 +15,7 @@ import {
 	DialogContentText,
 	DialogTitle,
 } from '@mui/material'
-import dogLogo from '../assets/dogLogo.png'
+const dogLogo = require('../assets/dogLogo.png') as string
 import {
 	deepOrange,
 	amber,
@@ -30,7 +30,7 @@ import {
 import BuildCircleIcon from '@mui/icons-material/BuildCircle'
 
 function Navbar() {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const { loggedIn, loggedInUser, firstName, firstLetter } = useAuthStatus()
 

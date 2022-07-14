@@ -1,19 +1,28 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useAppDispatch } from '../app/hooks/rtkHooks.js'
 import { likePost, unlikePost } from '../features/posts/postsSlice.js'
+import { FetchedPostData } from '../features/posts/postTypes'
+import { UserState } from '../features/users/userTypes'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import { Box, Paper, Typography, Divider, Button } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 
 function PostDetails() {
-	const dispatch = useDispatch()
+	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 	const location = useLocation()
 
 	// state from Post component
+	type PostState = {
+		post: FetchedPostData
+		liked: boolean
+		likeCount: number
+		featuresDisabled: boolean
+		loggedInUser: UserState
+	}
 	const { post, liked, likeCount, featuresDisabled, loggedInUser } =
-		location.state
+		location.state as PostState
 
 	// local liked/likeCount state
 	const [detailsLiked, setDetailsLiked] = useState(liked)
@@ -114,13 +123,13 @@ function PostDetails() {
 							onClick={(e) => {
 								e.preventDefault()
 								if (!detailsLiked) {
-									dispatch(likePost(post._id))
+									dispatch(likePost({ postId: post._id }))
 									setDetailsLikeCount(
 										(detailsLikeCount) =>
 											detailsLikeCount + 1
 									)
 								} else {
-									dispatch(unlikePost(post._id))
+									dispatch(unlikePost({ postId: post._id }))
 									setDetailsLikeCount(
 										(detailsLikeCount) =>
 											detailsLikeCount - 1
@@ -129,10 +138,11 @@ function PostDetails() {
 								setDetailsLiked(!detailsLiked)
 							}}
 							disabled={
-								loggedInUser?.admin
+								loggedInUser?.currentUser?.admin
 									? false
 									: featuresDisabled ||
-									  loggedInUser?.name !== post.creator
+									  loggedInUser?.currentUser?.name !==
+											post.creator
 							}
 						>
 							<ThumbUpAltIcon
@@ -140,7 +150,7 @@ function PostDetails() {
 								color={detailsLiked ? 'primary' : 'action'}
 								sx={{
 									mr: 1,
-									transform: detailsLiked && 'scale(1.1)',
+									transform: detailsLiked ? 'scale(1.1)' : '',
 								}}
 							/>
 							<span

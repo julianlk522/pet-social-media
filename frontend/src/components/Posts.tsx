@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks.js'
 import { getPaginatedPosts, getPosts } from '../features/posts/postsSlice.js'
-import { useAuthStatus } from '../hooks/useAuthStatus'
-import Post from './Post.jsx'
+import { useAuthStatus } from '../app/hooks/useAuthStatus.js'
+import Post from './Post.js'
 import { CircularProgress, Grid, Box } from '@mui/material'
 
 function Posts({ setCurrentPostId, page }) {
-	const dispatch = useDispatch()
-	const isLoading = useSelector((state) => state.posts.isLoading)
-	const posts = useSelector((state) => state.posts.postsArray)
+	const dispatch = useAppDispatch()
+	const isLoading = useAppSelector((state) => state.posts.isLoading)
+	const posts = useAppSelector((state) => state.posts.postsArray)
 
 	const { loggedIn, loggedInUser } = useAuthStatus()
 
