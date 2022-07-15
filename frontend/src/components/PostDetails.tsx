@@ -138,11 +138,9 @@ function PostDetails() {
 								setDetailsLiked(!detailsLiked)
 							}}
 							disabled={
-								loggedInUser?.currentUser?.admin
-									? false
-									: featuresDisabled ||
-									  loggedInUser?.currentUser?.name !==
-											post.creator
+								!loggedInUser?.currentUser?.admin ||
+								featuresDisabled ||
+								loggedInUser?.currentUser?.name !== post.creator
 							}
 						>
 							<ThumbUpAltIcon

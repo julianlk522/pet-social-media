@@ -1,6 +1,6 @@
 {
 	"compilerOptions": {
-		"target": "es2016",
+		"target": "es6",
 		"module": "commonjs",
 		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
@@ -9,7 +9,8 @@
 		"jsx": "react-jsx",
 		"noImplicitAny": true,
 		"noImplicitThis": true,
-		"strictNullChecks": true
+		"strictNullChecks": true,
+		"outDir": "../dist/frontend"
 	},
 	"include": [
 		"frontend/global.d.ts",

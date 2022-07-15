@@ -20,7 +20,7 @@ function Home() {
 	const [currentPostId, setCurrentPostId] = useState(null)
 
 	//	post search state
-	const [searchTags, setSearchTags] = useState<any[]>([''])
+	const [searchTags, setSearchTags] = useState<any[]>([])
 	const [searchString, setSearchString] = useState('')
 	const [currentSearchTag, setCurrentSearchTag] = useState('')
 
@@ -117,7 +117,7 @@ function Home() {
 						onChange={(e, value) => {
 							e.preventDefault()
 							console.log(value)
-							if (!value.includes(' ')) {
+							if (!value.some((tag) => tag.match(/\s/g))) {
 								setSearchTags(value)
 								setCurrentSearchTag('')
 							} else return console.log('no whitespace!')

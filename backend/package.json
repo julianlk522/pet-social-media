@@ -1,14 +1,12 @@
 {
 	"name": "backend",
 	"version": "1.0.0",
-	"description": "",
-	"main": "server.ts",
 	"scripts": {
 		"server": "nodemon backend/server.ts",
 		"client": "npm start --prefix frontend",
-		"dev": "concurrently \"npm run server\" \"npm run client\""
+		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"tscbuild": "tsc --build"
 	},
-	"keywords": [],
 	"author": "Julian Lindsay-Kaufman",
 	"license": "ISC",
 	"dependencies": {
