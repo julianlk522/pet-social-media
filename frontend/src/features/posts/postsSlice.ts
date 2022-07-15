@@ -213,7 +213,6 @@ const postsSlice = createSlice({
 			state.selectedPostDetails.likeCount = action.payload.likeCount
 			state.selectedPostDetails.featuresDisabled =
 				action.payload.featuresDisabled
-			console.log(action.payload)
 		},
 	},
 	extraReducers(builder) {

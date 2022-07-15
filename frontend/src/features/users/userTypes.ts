@@ -1,7 +1,5 @@
 export type UserState = {
 	currentUser: UserData | null
-	isError: boolean
-	isSuccess: boolean
 	isLoading: boolean
 	message: string | null
 }

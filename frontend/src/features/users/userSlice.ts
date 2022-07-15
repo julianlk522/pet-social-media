@@ -4,12 +4,11 @@ import { UserState, UserData, RegisterData, LoginData } from './userTypes'
 import userService from './userService'
 
 //  Check localstorage for user
-const savedUser = JSON.parse(localStorage.getItem('user') ?? '')
+const savedUserData = localStorage.getItem('user')
+const savedUser = savedUserData ? JSON.parse(savedUserData) : null
 
 const initialState: UserState = {
 	currentUser: savedUser ? savedUser : null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
 	message: '',
 }
@@ -80,8 +79,6 @@ const userSlice = createSlice({
 	initialState,
 	reducers: {
 		resetUserState: (state) => {
-			state.isError = false
-			state.isSuccess = false
 			state.isLoading = false
 			state.message = ''
 		},
@@ -90,21 +87,17 @@ const userSlice = createSlice({
 		builder
 			.addCase(registerUser.fulfilled, (state, action) => {
 				state.isLoading = true
-				state.isSuccess = true
 				state.currentUser = action.payload.userData
 			})
 			.addCase(registerUser.rejected, (state, action) => {
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
 			.addCase(loginUser.fulfilled, (state, action) => {
 				state.isLoading = true
-				state.isSuccess = true
 				state.currentUser = action.payload.userData
 			})
 			.addCase(loginUser.rejected, (state, action) => {
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -115,11 +108,9 @@ const userSlice = createSlice({
 				state.isLoading = true
 			})
 			.addCase(checkUserPassword.fulfilled, (state) => {
-				state.isSuccess = true
 				state.isLoading = false
 			})
 			.addCase(checkUserPassword.rejected, (state, action) => {
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 				state.isLoading = false

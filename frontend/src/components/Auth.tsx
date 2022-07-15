@@ -6,7 +6,9 @@ import {
 	Paper,
 	TextField,
 	Typography,
+	IconButton,
 } from '@mui/material'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import { useAppDispatch } from '../app/hooks/rtkHooks'
@@ -22,6 +24,7 @@ function Auth() {
 	const navigate = useNavigate()
 
 	const [isSignUp, setIsSignUp] = useState(true)
+	const [showPassword, setShowPassword] = useState(false)
 	const [formData, setFormData] = useState({
 		name: '',
 		email: '',
@@ -45,7 +48,7 @@ function Auth() {
 				dispatch(resetUserState())
 				return navigate('/')
 			} else {
-				return console.log('bad login info provided!')
+				return console.log('bad signup info provided!')
 			}
 		} else {
 			const loginData = {
@@ -152,16 +155,38 @@ function Auth() {
 									mb: 2,
 								}}
 							/>
-							<TextField
-								name='password'
-								label='Password'
-								type='password'
-								value={password}
-								onChange={handleChange}
-								variant='outlined'
-								required
-								fullWidth
-							/>
+							<Box
+								id='passwordInputBox'
+								sx={{
+									position: 'relative',
+									width: '100%',
+									display: 'flex',
+									alignItems: 'center',
+								}}
+							>
+								<TextField
+									name='password'
+									label='Password'
+									type={showPassword ? 'text' : 'password'}
+									value={password}
+									onChange={handleChange}
+									variant='outlined'
+									required
+									fullWidth
+								/>
+								<IconButton
+									aria-label='showPassword'
+									onClick={() =>
+										setShowPassword(!showPassword)
+									}
+									sx={{
+										position: 'absolute',
+										right: '1rem',
+									}}
+								>
+									<VisibilityIcon />
+								</IconButton>
+							</Box>
 
 							<Button
 								type='submit'

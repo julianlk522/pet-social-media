@@ -11,8 +11,8 @@ const url = 'http://localhost:5000/users'
 const registerUser = async (signUpData: RegisterData) => {
 	const response = await axios.post(url, signUpData)
 
-	if (response.data)
-		localStorage.setItem('user', JSON.stringify(response.data))
+	if (response.data && response.data.userData)
+		localStorage.setItem('user', JSON.stringify(response.data.userData))
 
 	return response.data
 }
@@ -20,8 +20,8 @@ const registerUser = async (signUpData: RegisterData) => {
 const loginUser = async (loginData: LoginData) => {
 	const response = await axios.post(`${url}/login`, loginData)
 
-	if (response.data)
-		localStorage.setItem('user', JSON.stringify(response.data))
+	if (response.data && response.data.userData)
+		localStorage.setItem('user', JSON.stringify(response.data.userData))
 
 	return response.data
 }

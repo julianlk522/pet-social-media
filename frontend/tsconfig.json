@@ -12,13 +12,6 @@
 		"strictNullChecks": true,
 		"outDir": "../dist/frontend"
 	},
-	"include": [
-		"frontend/global.d.ts",
-		"*.ts",
-		"*.tsx",
-		"src",
-		"src/*.ts",
-		"src/*.tsx"
-	],
+	"include": ["global.d.ts", "*.ts", "*.tsx", "src", "src/*.ts", "src/*.tsx"],
 	"exclude": ["node_modules"]
 }
