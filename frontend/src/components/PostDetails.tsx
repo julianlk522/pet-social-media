@@ -1,32 +1,25 @@
 import React, { useState } from 'react'
-import { useAppDispatch } from '../app/hooks/rtkHooks'
+import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
+import { useAuthStatus } from '../app/hooks/useAuthStatus'
 import { likePost, unlikePost } from '../features/posts/postsSlice'
-import { FetchedPostData } from '../features/posts/postTypes'
-import { UserState } from '../features/users/userTypes'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import { Box, Paper, Typography, Divider, Button } from '@mui/material'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow } from 'date-fns'
 
 function PostDetails() {
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-	const location = useLocation()
 
-	// state from Post component
-	type PostState = {
-		post: FetchedPostData
-		liked: boolean
-		likeCount: number
-		featuresDisabled: boolean
-		loggedInUser: UserState
-	}
-	const { post, liked, likeCount, featuresDisabled, loggedInUser } =
-		location.state as PostState
+	//	user auth state and post info state
+	const { loggedInUser } = useAuthStatus()
+	const { post, liked, likeCount, featuresDisabled } = useAppSelector(
+		(state) => state.posts.selectedPostDetails
+	)
 
 	// local liked/likeCount state
 	const [detailsLiked, setDetailsLiked] = useState(liked)
-	const [detailsLikeCount, setDetailsLikeCount] = useState(likeCount)
+	const [detailsLikeCount, setDetailsLikeCount] = useState(likeCount || 0)
 	return (
 		<Paper elevation={6} sx={{ p: 4, borderRadius: 4 }}>
 			{/* title */}
@@ -37,7 +30,7 @@ function PostDetails() {
 					mb: 4,
 				}}
 			>
-				{post.title}
+				{post?.title}
 			</Typography>
 			<Box
 				sx={{
@@ -59,7 +52,7 @@ function PostDetails() {
 						color='primary'
 						sx={{ display: 'inline', ml: 2 }}
 					>
-						{post.creator}
+						{post?.creator}
 					</Typography>
 
 					<Divider sx={{ my: 2 }} />
@@ -72,7 +65,7 @@ function PostDetails() {
 							my: 8,
 						}}
 					>
-						{post.message}
+						{post?.message}
 					</Typography>
 
 					{/* tags */}
@@ -83,12 +76,13 @@ function PostDetails() {
 							mb: 2,
 						}}
 					>
-						{post.tags?.map((tag) => `#${tag} `)}
+						{post?.tags?.map((tag) => `#${tag} `)}
 					</Typography>
 
 					{/* age */}
 					<Typography variant='body1'>
-						{formatDistanceToNow(new Date(post.createdAt))} ago
+						{post && formatDistanceToNow(new Date(post.createdAt))}{' '}
+						ago
 					</Typography>
 
 					<Divider sx={{ my: 2 }} />
@@ -121,31 +115,45 @@ function PostDetails() {
 								alignItems: 'center',
 							}}
 							onClick={(e) => {
-								e.preventDefault()
-								if (!detailsLiked) {
-									dispatch(likePost({ postId: post._id }))
-									setDetailsLikeCount(
-										(detailsLikeCount) =>
-											detailsLikeCount + 1
-									)
-								} else {
-									dispatch(unlikePost({ postId: post._id }))
-									setDetailsLikeCount(
-										(detailsLikeCount) =>
-											detailsLikeCount - 1
-									)
-								}
-								setDetailsLiked(!detailsLiked)
+								if (post && detailsLiked !== null) {
+									e.preventDefault()
+									if (!detailsLiked) {
+										dispatch(
+											likePost({ postId: post?._id })
+										)
+										setDetailsLikeCount(
+											(detailsLikeCount) =>
+												detailsLikeCount + 1
+										)
+									} else {
+										dispatch(
+											unlikePost({ postId: post._id })
+										)
+										setDetailsLikeCount(
+											(detailsLikeCount) =>
+												detailsLikeCount - 1
+										)
+									}
+									setDetailsLiked(!detailsLiked)
+								} else return
 							}}
 							disabled={
-								!loggedInUser?.currentUser?.admin ||
-								featuresDisabled ||
-								loggedInUser?.currentUser?.name !== post.creator
+								!loggedInUser?.admin &&
+								(featuresDisabled ||
+									loggedInUser?.name !== post?.creator)
 							}
 						>
 							<ThumbUpAltIcon
 								fontSize='small'
-								color={detailsLiked ? 'primary' : 'action'}
+								color={
+									!loggedInUser?.admin &&
+									(featuresDisabled ||
+										loggedInUser?.name !== post?.creator)
+										? 'disabled'
+										: detailsLiked
+										? 'primary'
+										: 'action'
+								}
 								sx={{
 									mr: 1,
 									transform: detailsLiked ? 'scale(1.1)' : '',
@@ -187,7 +195,7 @@ function PostDetails() {
 							borderRadius: '2rem',
 							objectFit: 'contain',
 						}}
-						src={post.imgBase64}
+						src={post?.imgBase64}
 						alt='the pic'
 					/>
 				</Box>

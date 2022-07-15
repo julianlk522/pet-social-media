@@ -1,7 +1,12 @@
 import React, { useState, useEffect, Dispatch } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
 import { useNavigate } from 'react-router-dom'
-import { deletePost, likePost, unlikePost } from '../features/posts/postsSlice'
+import {
+	deletePost,
+	likePost,
+	unlikePost,
+	assignSelectedPostDetails,
+} from '../features/posts/postsSlice'
 import { FetchedPostData } from '../features/posts/postTypes'
 import { checkUserPassword } from '../features/users/userSlice'
 import { UserData } from '../features/users/userTypes'
@@ -81,17 +86,6 @@ function Post({
 			}}
 		>
 			<CardMedia
-				onClick={() =>
-					navigate(`/posts/${post._id}`, {
-						state: {
-							post: post,
-							liked: liked,
-							likeCount: likeCount,
-							featuresDisabled: featuresDisabled,
-							loggedInUser: loggedInUser,
-						},
-					})
-				}
 				image={post.imgBase64}
 				title={post.title}
 				sx={{
@@ -99,6 +93,17 @@ function Post({
 					bgcolor: 'rgba(0, 0, 0, 0.5)',
 					backgroundBlendMode: 'darken',
 					cursor: 'pointer',
+				}}
+				onClick={() => {
+					dispatch(
+						assignSelectedPostDetails({
+							post,
+							liked,
+							likeCount,
+							featuresDisabled,
+						})
+					)
+					navigate(`/posts/${post._id}`)
 				}}
 			/>
 			{/* post creator and post age */}
@@ -128,10 +133,9 @@ function Post({
 					size='small'
 					onClick={() => setCurrentPostId(post._id)}
 					disabled={
-						loggedInUser?.admin
-							? false
-							: featuresDisabled ||
-							  loggedInUser?.name !== post.creator
+						!loggedInUser?.admin &&
+						(featuresDisabled ||
+							loggedInUser?.name !== post?.creator)
 					}
 					sx={{
 						color: 'white',
@@ -218,15 +222,22 @@ function Post({
 						setLiked(!liked)
 					}}
 					disabled={
-						loggedInUser?.admin
-							? false
-							: featuresDisabled ||
-							  loggedInUser?.name !== post.creator
+						!loggedInUser?.admin &&
+						(featuresDisabled ||
+							loggedInUser?.name !== post?.creator)
 					}
 				>
 					<ThumbUpAltIcon
 						fontSize='small'
-						color={liked ? 'primary' : 'action'}
+						color={
+							!loggedInUser?.admin &&
+							(featuresDisabled ||
+								loggedInUser?.name !== post?.creator)
+								? 'disabled'
+								: liked
+								? 'primary'
+								: 'action'
+						}
 						sx={{
 							mr: 1,
 							transform: liked ? 'scale(1.1)' : '',
@@ -250,10 +261,9 @@ function Post({
 						setDeleteDialogOpen(true)
 					}}
 					disabled={
-						loggedInUser?.admin
-							? false
-							: featuresDisabled ||
-							  loggedInUser?.name !== post.creator
+						!loggedInUser?.admin &&
+						(featuresDisabled ||
+							loggedInUser?.name !== post?.creator)
 					}
 				>
 					<DeleteIcon

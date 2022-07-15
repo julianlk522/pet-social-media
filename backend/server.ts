@@ -1,10 +1,11 @@
-import 'dotenv/config'
+import * as dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import { errorHandler } from './middleware/errorMiddleware'
 
 const app = express()
+dotenv.config({ path: '../.env' })
 const PORT = process.env.PORT || 5000
 
 //  Mongoose connect
@@ -17,6 +18,7 @@ const connectDB = async (): Promise<void> => {
 		console.log(`MongoDB Connected: ${conn.connection.host}`)
 	} catch (error) {
 		console.log(`Error: ${error}`)
+		console.log(process.env.MONGO_CLUSTER_CONNECTION_STRING)
 		process.exit(1)
 	}
 }

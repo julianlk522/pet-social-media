@@ -1,3 +1,11 @@
+export type PostsState = {
+	postsArray: FetchedPostData[]
+	selectedPostDetails: PostDetailsProps
+	totalPages: string | null
+	isLoading: boolean
+	message: string | null
+}
+
 export type FetchedPostData = {
 	_id: string
 	title: string
@@ -17,12 +25,9 @@ export type NewPostData = {
 	creator: string
 }
 
-export type PostsState = {
-	postsArray: FetchedPostData[]
-	selectedPost: number | null
-	totalPages: string | null
-	isError: boolean
-	isSuccess: boolean
-	isLoading: boolean
-	message: string | null
+export type PostDetailsProps = {
+	post: FetchedPostData | null
+	liked: boolean | null
+	likeCount: number | null
+	featuresDisabled: boolean | null
 }

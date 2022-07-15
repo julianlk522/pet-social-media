@@ -1,14 +1,22 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../app/store'
-import { FetchedPostData, NewPostData, PostsState } from './postTypes'
+import {
+	FetchedPostData,
+	NewPostData,
+	PostDetailsProps,
+	PostsState,
+} from './postTypes'
 import postsService from './postsService'
 
 const initialState: PostsState = {
 	postsArray: [],
-	selectedPost: null,
+	selectedPostDetails: {
+		post: null,
+		liked: null,
+		likeCount: null,
+		featuresDisabled: null,
+	},
 	totalPages: null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
 	message: '',
 }
@@ -185,11 +193,27 @@ const postsSlice = createSlice({
 	initialState,
 	reducers: {
 		resetPostsState: (state) => {
-			state.isError = false
-			state.isSuccess = false
+			state.postsArray = []
+			state.selectedPostDetails = {
+				post: null,
+				liked: null,
+				likeCount: null,
+				featuresDisabled: null,
+			}
+			state.totalPages = null
 			state.isLoading = false
 			state.message = ''
-			state.totalPages = null
+		},
+		assignSelectedPostDetails: (
+			state,
+			action: PayloadAction<PostDetailsProps>
+		) => {
+			state.selectedPostDetails.post = action.payload.post
+			state.selectedPostDetails.liked = action.payload.liked
+			state.selectedPostDetails.likeCount = action.payload.likeCount
+			state.selectedPostDetails.featuresDisabled =
+				action.payload.featuresDisabled
+			console.log(action.payload)
 		},
 	},
 	extraReducers(builder) {
@@ -199,7 +223,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(getPosts.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				state.postsArray = action.payload.postData
 					? action.payload.postData
 					: state.postsArray
@@ -209,7 +232,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(getPosts.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -218,7 +240,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(getPaginatedPosts.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				state.postsArray = action.payload.postData
 					? action.payload.postData
 					: state.postsArray
@@ -228,7 +249,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(getPaginatedPosts.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -237,14 +257,12 @@ const postsSlice = createSlice({
 			})
 			.addCase(searchPosts.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				state.postsArray = action.payload.postData
 					? action.payload.postData
 					: state.postsArray
 			})
 			.addCase(searchPosts.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -253,13 +271,11 @@ const postsSlice = createSlice({
 			})
 			.addCase(createPost.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				action.payload.postData !== null &&
 					state.postsArray.push(action.payload.postData)
 			})
 			.addCase(createPost.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -268,7 +284,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(updatePost.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				console.log(action.payload.postData)
 				state.postsArray = state.postsArray.map((post) =>
 					post._id === action.payload.postData._id
@@ -278,7 +293,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(updatePost.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
@@ -287,19 +301,17 @@ const postsSlice = createSlice({
 			})
 			.addCase(deletePost.fulfilled, (state, action) => {
 				state.isLoading = false
-				state.isSuccess = true
 				state.postsArray = state.postsArray.filter(
 					(post) => post._id !== action.payload.postId
 				)
 			})
 			.addCase(deletePost.rejected, (state, action) => {
 				state.isLoading = false
-				state.isError = true
 				state.message =
 					typeof action.payload === 'string' ? action.payload : ''
 			})
 	},
 })
 
-export const { resetPostsState } = postsSlice.actions
+export const { resetPostsState, assignSelectedPostDetails } = postsSlice.actions
 export default postsSlice.reducer
