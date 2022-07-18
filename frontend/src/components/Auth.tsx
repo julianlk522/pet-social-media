@@ -1,3 +1,12 @@
+import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { useAppDispatch } from '../app/hooks/rtkHooks'
+import { useNavigate } from 'react-router-dom'
+import {
+	registerUser,
+	loginUser,
+	resetUserState,
+} from '../features/users/userSlice'
+import { toast } from 'react-toastify'
 import {
 	Avatar,
 	Button,
@@ -10,16 +19,13 @@ import {
 } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
-import { useAppDispatch } from '../app/hooks/rtkHooks'
-import { useNavigate } from 'react-router-dom'
-import {
-	registerUser,
-	loginUser,
-	resetUserState,
-} from '../features/users/userSlice'
 
 function Auth() {
+	const toastOptions = {
+		autoClose: 4000,
+		position: toast.POSITION.BOTTOM_RIGHT,
+	}
+
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
 
@@ -48,7 +54,10 @@ function Auth() {
 				dispatch(resetUserState())
 				return navigate('/')
 			} else {
-				return console.log('bad signup info provided!')
+				return toast.error(
+					'Error: Existing user with email provided!  Please choose a different one.',
+					toastOptions
+				)
 			}
 		} else {
 			const loginData = {
@@ -61,7 +70,10 @@ function Auth() {
 				dispatch(resetUserState())
 				return navigate('/')
 			} else {
-				return console.log('bad login info provided!')
+				return toast.error(
+					'Error: Bad login info provided!  Try re-typing your email and password.',
+					toastOptions
+				)
 			}
 		}
 	}

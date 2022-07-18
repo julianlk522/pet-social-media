@@ -27,7 +27,7 @@ import {
 	green,
 } from '@mui/material/colors'
 import BuildCircleIcon from '@mui/icons-material/BuildCircle'
-const dogLogo = require('../assets/dogLogo.png') as string
+import dogLogo from '../assets/dogLogo.png'
 
 function Navbar() {
 	const dispatch = useAppDispatch()

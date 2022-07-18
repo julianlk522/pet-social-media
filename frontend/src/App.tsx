@@ -6,16 +6,19 @@ import {
 	Navigate,
 } from 'react-router-dom'
 import { Container } from '@mui/material'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import Navbar from './components/Navbar'
 import Home from './components/Home'
 import Auth from './components/Auth'
 import PostDetails from './components/PostDetails'
 // svg background source: https://bgjar.com/cloudy
-const bgSvg = require('./assets/bg.svg') as string
+import bgSvg from './assets/bg.svg'
 
 function App() {
 	return (
 		<Router>
+			<ToastContainer />
 			<Container
 				sx={{
 					backgroundImage: `url(${bgSvg})`,

@@ -1,7 +1,8 @@
-import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
+import React, { ChangeEvent, SyntheticEvent, useState, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
-import { searchPosts } from '../features/posts/postsSlice'
 import { useParams, useNavigate } from 'react-router-dom'
+import { searchPosts } from '../features/posts/postsSlice'
+import { toast } from 'react-toastify'
 import Posts from './Posts'
 import Form from './Form'
 import {
@@ -17,6 +18,11 @@ import {
 } from '@mui/material'
 
 function Home() {
+	const toastOptions = {
+		autoClose: 4000,
+		position: toast.POSITION.BOTTOM_RIGHT,
+	}
+
 	const [currentPostId, setCurrentPostId] = useState(null)
 
 	//	post search state
@@ -29,10 +35,12 @@ function Home() {
 	const [currentPage, setCurrentPage] = useState(
 		page !== undefined ? page : String(1)
 	)
-
 	const totalPages = useAppSelector((state) => state.posts?.totalPages)
+
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
+
+	const tagsRef = useRef(null)
 
 	return (
 		<Grid
@@ -108,19 +116,29 @@ function Home() {
 						options={[]}
 						value={searchTags}
 						inputValue={currentSearchTag}
-						onInputChange={(e: SyntheticEvent<Element>) => {
+						onInputChange={(e: SyntheticEvent<Element>, value) => {
 							const target = e.target as HTMLInputElement
-							setCurrentSearchTag(target.value)
+							if (!/[\w]/i.test(target.value))
+								return toast.error(
+									'Sorry, no empty whitespace tags allowed!  Please try again',
+									toastOptions
+								)
+							if (target.value && target.value.match(/\s/)) {
+								setSearchTags([
+									...searchTags,
+									target.value.trim(),
+								])
+								setCurrentSearchTag('')
+							} else {
+								setCurrentSearchTag(target.value)
+							}
 						}}
 						freeSolo
 						size='small'
 						onChange={(e, value) => {
 							e.preventDefault()
-							console.log(value)
-							if (!value.some((tag) => tag.match(/\s/g))) {
-								setSearchTags(value)
-								setCurrentSearchTag('')
-							} else return console.log('no whitespace!')
+							setSearchTags(value)
+							setCurrentSearchTag('')
 						}}
 						renderTags={(value, getTagProps) =>
 							value.map((option, index) => (
@@ -136,6 +154,7 @@ function Home() {
 							return (
 								<TextField
 									{...params}
+									ref={tagsRef}
 									variant='outlined'
 									label='Filter by tags'
 									placeholder='e.g. Dogs'
@@ -149,7 +168,10 @@ function Home() {
 							;(!searchString.trim().length &&
 								!searchTags.length) ||
 							searchString.match(/[^a-zA-Z\s']/)
-								? console.log('nothing to see here folks')
+								? toast.error(
+										'Error: Query or tags not provided - please enter one or both to search.',
+										toastOptions
+								  )
 								: searchString.trim().length &&
 								  !searchTags.length
 								? dispatch(
