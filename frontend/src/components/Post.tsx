@@ -146,17 +146,17 @@ function Post({
 				</Button>
 			</Box>
 			<CardContent
-				onClick={() =>
-					navigate(`/posts/${post._id}`, {
-						state: {
-							post: post,
-							liked: liked,
-							likeCount: likeCount,
-							featuresDisabled: featuresDisabled,
-							loggedInUser: loggedInUser,
-						},
-					})
-				}
+				onClick={() => {
+					dispatch(
+						assignSelectedPostDetails({
+							post,
+							liked,
+							likeCount,
+							featuresDisabled,
+						})
+					)
+					navigate(`/posts/${post._id}`)
+				}}
 				sx={{
 					display: 'flex',
 					flexDirection: 'column',
