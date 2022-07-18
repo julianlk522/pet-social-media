@@ -1,25 +1,45 @@
-import React, { useState, useEffect, FormEvent, Dispatch } from 'react'
-import { TextField, Button, Typography, Paper, Box } from '@mui/material'
-import FileBase from 'react-file-base64'
+import React, {
+	useState,
+	useEffect,
+	FormEvent,
+	SyntheticEvent,
+	Dispatch,
+} from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
 import { useAuthStatus } from '../app/hooks/useAuthStatus'
 import { createPost, updatePost } from '../features/posts/postsSlice'
+import { toast } from 'react-toastify'
+import FileBase from 'react-file-base64'
+import {
+	TextField,
+	Button,
+	Typography,
+	Paper,
+	Box,
+	Autocomplete,
+	Chip,
+} from '@mui/material'
 
 type FormProps = {
 	currentPostId: string
 	setCurrentPostId: Dispatch<any>
 }
 
-type FileBaseProps = {
-	base64: string
-}
-
 function Form({ currentPostId, setCurrentPostId }: FormProps) {
+	const toastOptions = {
+		autoClose: 4000,
+		position: toast.POSITION.BOTTOM_RIGHT,
+	}
+
 	type FormData = {
 		title: string
 		message: string
-		tags: string[]
+		tags: any[]
 		imgBase64?: string | undefined
+	}
+
+	type FileBaseProps = {
+		base64: string
 	}
 
 	const [formData, setFormData] = useState<FormData>({
@@ -28,6 +48,9 @@ function Form({ currentPostId, setCurrentPostId }: FormProps) {
 		tags: [],
 		imgBase64: '',
 	})
+
+	//	tags input state
+	const [currentNewTag, setCurrentNewTag] = useState('')
 
 	const dispatch = useAppDispatch()
 	const { loggedIn, loggedInUser } = useAuthStatus()
@@ -132,7 +155,7 @@ function Form({ currentPostId, setCurrentPostId }: FormProps) {
 						})
 					}
 				/>
-				<TextField
+				{/* <TextField
 					margin='normal'
 					name='tags'
 					variant='outlined'
@@ -145,6 +168,59 @@ function Form({ currentPostId, setCurrentPostId }: FormProps) {
 							tags: e.target.value.split(','),
 						})
 					}
+				/> */}
+				<Autocomplete
+					multiple
+					id='tagsInput'
+					options={[]}
+					value={formData.tags}
+					inputValue={currentNewTag}
+					onInputChange={(e: SyntheticEvent<Element>) => {
+						const target = e.target as HTMLInputElement
+						if (!/[\w]/i.test(target.value))
+							return toast.error(
+								'Sorry, no empty whitespace tags allowed!  Please try again',
+								toastOptions
+							)
+						if (target.value && target.value.match(/\s/)) {
+							setFormData({
+								...formData,
+								tags: [...formData.tags, target.value.trim()],
+							})
+							setCurrentNewTag('')
+						} else {
+							setCurrentNewTag(target.value)
+						}
+					}}
+					freeSolo
+					size='small'
+					onChange={(e, value) => {
+						e.preventDefault()
+						setFormData({
+							...formData,
+							tags: value,
+						})
+						setCurrentNewTag('')
+					}}
+					renderTags={(value, getTagProps) =>
+						value.map((option, index) => (
+							<Chip
+								variant='outlined'
+								label={option}
+								{...getTagProps({ index })}
+								key={index}
+							/>
+						))
+					}
+					renderInput={(params) => {
+						return (
+							<TextField
+								{...params}
+								variant='outlined'
+								label='Tags'
+							/>
+						)
+					}}
 				/>
 
 				<Box

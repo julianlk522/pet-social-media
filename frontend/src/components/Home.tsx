@@ -1,4 +1,4 @@
-import React, { ChangeEvent, SyntheticEvent, useState, useRef } from 'react'
+import React, { ChangeEvent, SyntheticEvent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks/rtkHooks'
 import { useParams, useNavigate } from 'react-router-dom'
 import { searchPosts } from '../features/posts/postsSlice'
@@ -39,8 +39,6 @@ function Home() {
 
 	const dispatch = useAppDispatch()
 	const navigate = useNavigate()
-
-	const tagsRef = useRef(null)
 
 	return (
 		<Grid
@@ -154,7 +152,6 @@ function Home() {
 							return (
 								<TextField
 									{...params}
-									ref={tagsRef}
 									variant='outlined'
 									label='Filter by tags'
 									placeholder='e.g. Dogs'
