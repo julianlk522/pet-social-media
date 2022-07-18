@@ -283,7 +283,6 @@ const postsSlice = createSlice({
 			})
 			.addCase(updatePost.fulfilled, (state, action) => {
 				state.isLoading = false
-				console.log(action.payload.postData)
 				state.postsArray = state.postsArray.map((post) =>
 					post._id === action.payload.postData._id
 						? action.payload.postData

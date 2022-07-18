@@ -18,7 +18,6 @@ const connectDB = async (): Promise<void> => {
 		console.log(`MongoDB Connected: ${conn.connection.host}`)
 	} catch (error) {
 		console.log(`Error: ${error}`)
-		console.log(process.env.MONGO_CLUSTER_CONNECTION_STRING)
 		process.exit(1)
 	}
 }

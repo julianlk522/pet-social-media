@@ -57,10 +57,10 @@ function Form({ currentPostId, setCurrentPostId }: FormProps) {
 		} else {
 			dispatch(createPost(updatedPostData))
 		}
-		handleClear()
+		clearFormData()
 	}
 
-	const handleClear = () => {
+	const clearFormData = () => {
 		setCurrentPostId(null)
 		setFormData({
 			title: '',
@@ -181,7 +181,7 @@ function Form({ currentPostId, setCurrentPostId }: FormProps) {
 					variant='contained'
 					color='secondary'
 					size='small'
-					onClick={handleClear}
+					onClick={clearFormData}
 					fullWidth
 				>
 					Clear

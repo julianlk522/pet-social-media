@@ -10,6 +10,7 @@ import {
 import { FetchedPostData } from '../features/posts/postTypes'
 import { checkUserPassword } from '../features/users/userSlice'
 import { UserData } from '../features/users/userTypes'
+import { toast } from 'react-toastify'
 import {
 	Box,
 	Card,
@@ -344,7 +345,6 @@ function Post({
 									value={passInput}
 									onChange={(e) => {
 										setPassInput(e.target.value)
-										console.log(e.target.value)
 									}}
 									margin='dense'
 									id='confirm-pass-input'
@@ -372,7 +372,6 @@ function Post({
 											pass: passInput,
 										})
 									)
-									console.log(response)
 									if (
 										response?.type ===
 										'users/checkUserPassword/fulfilled'
@@ -381,7 +380,10 @@ function Post({
 											deletePost({ postId: post._id })
 										)
 										setConfirmDeleteDialogOpen(false)
-									} else return console.log('nope!')
+									} else
+										return toast.error(
+											'Incorrect password provided.  Could not authorize post deletion.'
+										)
 								}}
 							>
 								Delete

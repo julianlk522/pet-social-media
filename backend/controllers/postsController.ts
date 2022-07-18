@@ -58,16 +58,15 @@ export const likePost = asyncHandler(async (req, res) => {
 	const post = await PostModel.findById(postId)
 
 	if (!post) throw new Error('Could not locate post with specified ID')
-	console.log('old likes', post.likes)
-	console.log('userId', userId)
+	console.log('old likes: ', post.likes)
 	post?.likes?.push(userId)
 
 	await PostModel.findByIdAndUpdate(
 		postId,
-		{ likes: post?.likes?.filter((like) => like.match(/\w/g)) },
+		{ likes: post?.likes },
 		{ new: true }
 	)
-	console.log('new likes', post.likes)
+	console.log('updated likes: ', post.likes)
 	res.status(200).json({ likes: post.likes })
 })
 
@@ -77,8 +76,7 @@ export const unlikePost = asyncHandler(async (req, res) => {
 	if (!userId) throw new Error('no userId provided')
 	const post = await PostModel.findById(postId)
 	if (!post) throw new Error('Could not locate post with specified ID')
-	console.log('old likes', post.likes)
-	console.log('userId', userId)
+	console.log('old likes: ', post.likes)
 
 	const newLikes = post?.likes?.filter((likerId) => likerId !== userId)
 	await PostModel.findByIdAndUpdate(
@@ -86,7 +84,7 @@ export const unlikePost = asyncHandler(async (req, res) => {
 		{ likes: newLikes },
 		{ new: true }
 	)
-	console.log('new likes', newLikes)
+	console.log('updated likes: ', newLikes)
 	res.status(200).json({ likes: newLikes })
 })
 

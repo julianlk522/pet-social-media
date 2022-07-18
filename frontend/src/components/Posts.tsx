@@ -22,7 +22,7 @@ function Posts({ setCurrentPostId, page }: PostsProps) {
 	//	fetch post data on load
 	useEffect(() => {
 		page ? dispatch(getPaginatedPosts({ page })) : dispatch(getPosts())
-	}, [dispatch, page])
+	}, [dispatch, page, posts.length])
 
 	//	check if signed in, if so grant editing privileges
 	useEffect(() => {

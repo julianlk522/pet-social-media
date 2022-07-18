@@ -80,8 +80,8 @@ const likePost = async (
 			config
 		)
 		return response.data
-	} catch (error) {
-		return console.log(error)
+	} catch (error: any) {
+		return error.message
 	}
 }
 

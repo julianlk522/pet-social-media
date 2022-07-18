@@ -116,7 +116,7 @@ function Home() {
 						options={[]}
 						value={searchTags}
 						inputValue={currentSearchTag}
-						onInputChange={(e: SyntheticEvent<Element>, value) => {
+						onInputChange={(e: SyntheticEvent<Element>) => {
 							const target = e.target as HTMLInputElement
 							if (!/[\w]/i.test(target.value))
 								return toast.error(

@@ -88,9 +88,10 @@ export const checkUserPassword = asyncHandler(async (req, res) => {
 	//  Locate user
 	const user = await UserModel.findById(_id)
 	if (!user) throw new Error('No user found with ID provided')
-	console.log(user)
 	if (await bcrypt.compare(pass, user.password)) {
 		res.status(200).json({ status: 'success' })
+	} else {
+		res.status(400)
+		throw new Error('Password does not match: access denied')
 	}
-	throw new Error('Password does not match: access denied')
 })
